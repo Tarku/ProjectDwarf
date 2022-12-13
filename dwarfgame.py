@@ -68,9 +68,6 @@ class DwarfGame:
         self.font = pygame.font.SysFont(self.fontName, self.normalFontSize)
         self.titleFont = pygame.font.SysFont(self.fontName, self.titleFontSize)
 
-        self.ps_Governor = Person("Governor James").Register()
-        self.ps_Governor2 = Person("Governor Kol").Register()
-
         self.buildingSelectionIndex = 0
         self.buildingTaskSelectionIndex = 0
         self.unitSelectionIndex = 0
@@ -151,8 +148,7 @@ class DwarfGame:
 
         self.colony.GiveHeadstart()
 
-        self.colony.AddMember(self.ps_Governor)
-        self.colony.AddMember(self.ps_Governor2)
+        self.colony.Populate(5)
 
         # World Generation
 
@@ -179,6 +175,7 @@ class DwarfGame:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_e:
                         self.currentScreen = Screen.EVENTS
@@ -186,11 +183,9 @@ class DwarfGame:
                     elif event.key == pygame.K_c:
                         self.currentScreen = Screen.COLONY
 
-                    elif event.key == pygame.K_m and self.currentScreen is not Screen.MAP:
-                        self.currentScreen = Screen.MAP
-
-                    elif event.key == pygame.K_ESCAPE and self.currentScreen is Screen.MAP:
-                        self.currentScreen = Screen.COLONY
+                    elif event.key == pygame.K_m:
+                        if self.currentScreen is not Screen.MAP:
+                            self.currentScreen = Screen.MAP
 
                     elif event.key == pygame.K_u:
                         self.currentScreen = Screen.UNITS
@@ -198,16 +193,22 @@ class DwarfGame:
                     elif event.key == pygame.K_i:
                         self.currentScreen = Screen.INVENTORY
 
-                    elif event.key == pygame.K_t and self.currentScreen is Screen.BUILDINGS:
-                        self.currentScreen = Screen.BUILDING_TASKS
+                    elif event.key == pygame.K_t:
+                        if self.currentScreen is Screen.BUILDINGS:
+                            self.currentScreen = Screen.BUILDING_TASKS
 
-                    elif event.key == pygame.K_RETURN and self.currentScreen is Screen.BUILDINGS:
-                        self.currentScreen = Screen.BUILDING_MENU
+                    elif event.key == pygame.K_RETURN:
+                        if self.currentScreen is Screen.BUILDINGS:
+                            self.currentScreen = Screen.BUILDING_MENU
 
-                    elif event.key == pygame.K_RETURN and self.currentScreen is Screen.BUILDING_MENU:
-                        all_building_tasks [
-                            self.buildingTaskSelectionIndex
-                        ].TryAt(self.colony)
+                        elif self.currentScreen is Screen.BUILDING_MENU:
+                            all_building_tasks [
+                                self.buildingTaskSelectionIndex
+                            ].TryAt(self.colony)
+
+                        elif self.currentScreen is Screen.UNITS:
+                            self.currentScreen = Screen.UNIT_PRESENTATION
+
 
                     elif event.key == pygame.K_b:
                         self.currentScreen = Screen.BUILDINGS
@@ -221,6 +222,13 @@ class DwarfGame:
 
                         elif self.currentScreen is Screen.BUILDING_MENU:
                             self.currentScreen = Screen.BUILDINGS
+
+                        elif self.currentScreen is Screen.UNIT_PRESENTATION:
+                            self.currentScreen = Screen.UNITS
+
+                        else:
+                            self.currentScreen = Screen.COLONY
+
 
                     elif event.key == pygame.K_UP:
                         if self.currentScreen is Screen.BUILDINGS:
@@ -527,7 +535,7 @@ class DwarfGame:
                     self.unitSelectionIndex = unitsQuantity - 1
 
                 if unitsQuantity == 0:
-                    unitText = loc.Get("empty")
+                    unitText = loc.Get("menu.empty")
                 else:
                     unitText = loc.Get("selection.unit", (self.unitSelectionIndex + 1, unitsQuantity, self.colony.members[self.unitSelectionIndex].name))
 
@@ -541,6 +549,58 @@ class DwarfGame:
                     250,
                     WHITE
                 )
+
+            elif self.currentScreen == Screen.UNIT_PRESENTATION:
+
+                unit: Person
+                if not self.colony.members:
+                    self.DisplayMiddleText(
+                        loc.Get("menu.empty"),
+                        250,
+                        WHITE
+                    )
+                else:
+                    unit = self.colony.members[
+                        self.unitSelectionIndex
+                    ]
+
+                    self.DisplayScreenTitle(loc.Get("title.unit_presentation", unit.name), YELLOW)
+
+                    personality = loc.Get(
+                        unit.GetPersonalityString()
+                    )
+
+                    # Shorthands (again, it's for my sanity)
+
+                    subj = loc.Get(
+                        unit.pronoun.subject
+                    )
+                    obj = loc.Get(
+                        unit.pronoun.object
+                    )
+                    refl = loc.Get(
+                        unit.pronoun.reflexive
+                    )
+                    poss = loc.Get(
+                        unit.pronoun.possessive
+                    )
+                    possPron = loc.Get(
+                        unit.pronoun.possessivePronoun
+                    )
+
+                    self.DisplayMiddleText(
+                        loc.Get(
+                            "unit.presentation",
+                            (
+                                subj,
+                                personality,
+                                subj,
+                                unit.age
+                            ),
+                        ),
+                        250,
+                        WHITE
+                    )
 
             pygame.display.flip()
 
