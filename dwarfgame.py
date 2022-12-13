@@ -2,6 +2,10 @@
 
 import pygame
 
+from time import perf_counter
+
+# Clearly not the best coding practices I know but who cares
+
 from colors import *
 from material import *
 from gameevent import *
@@ -14,7 +18,6 @@ from localization import *
 from screentype import *
 from options import *
 from world import *
-from time import perf_counter
 from utils import *
 
 
@@ -32,74 +35,55 @@ class DwarfGame:
     The base class for the whole game.
     '''
 
+    running: bool
+    clock: pygame.time.Clock
+    displayText: pygame.Surface
+    world: World
+    currentScreen: Screen
+
+    eventLog: list
+
     def __init__(self):
+        pygame.init()
+
+        pygame.display.set_caption(TITLE)
+        pygame.display.set_icon(ICON_IMAGE)
+
+        # Open option files
+
         self.options = Options("options.txt")
         self.keybindings = Options("keybindings.txt")
+
+        # Get parameters
 
         self.displaySize = (
             self.options.Get("window_width"),
             self.options.Get("window_height")
         )
 
-        pygame.init()
-
-        pygame.display.set_caption(TITLE)
-        pygame.display.set_icon(ICON_IMAGE)
-
         self.display = pygame.display.set_mode(
             self.displaySize
         )
 
+        self.normalFontSize = self.options.Get("normal_font_size")
+        self.titleFontSize = self.options.Get("title_font_size")
+        self.fontName = self.options.Get("font")
         self.currentLanguage = self.options.Get("language")
 
         self.localization = Localization(self.currentLanguage)
 
-        self.running = True
-        self.clock = None
-
-        self.fontName = self.options.Get("font")
-
-        self.normalFontSize = self.options.Get("normal_font_size")
-        self.titleFontSize = self.options.Get("title_font_size")
-
         self.font = pygame.font.SysFont(self.fontName, self.normalFontSize)
         self.titleFont = pygame.font.SysFont(self.fontName, self.titleFontSize)
-
-        self.displayText = None
-        self.eventLog = []
-
-        self.currentScreen = Screen.COLONY
 
         self.fc_Faction = Faction("Newcomers")
         self.fc_AllyFaction = Faction()
 
         self.fc_AllyFaction.GenerateName(minLength=2, maxLength=3)
 
-        print(self.fc_AllyFaction.name)
-
-        self.col_Colony = Colony("New Colony", self.fc_Faction).Register()
+        self.colony = Colony("New Colony", self.fc_Faction).Register()
 
         self.ps_Governor = Person("Governor James").Register()
         self.ps_Governor2 = Person("Governor Kol").Register()
-
-        self.col_Colony.AddMember(self.ps_Governor)
-        self.col_Colony.AddMember(self.ps_Governor2)
-
-        self.ge_GovernorVisit = GameEvent("Governor Visit", {
-            EventType.VISITOR: self.ps_Governor
-        }, 1, 500)
-
-        self.ge_namePrompt = GameEvent("Prompt", {
-            EventType.COLONY_NAME_PROMPT: self.ps_Governor2
-        })
-
-        self.ge_A = GameEvent("A", {
-            EventType.VISITOR_GIFT: {
-                "Visitor": self.ps_Governor,
-                "Item": mat_WOOD,
-                "Count": 50
-            }
-        }, 50, 500)
 
         self.buildingSelectionIndex = 0
         self.buildingTaskSelectionIndex = 0
@@ -111,22 +95,6 @@ class DwarfGame:
         self.isTKeyPressed = False
 
         self.mapCameraOffset = (0, 0)
-
-        self.col_Colony.GiveHeadstart()
-
-        print("World generation...")
-        start = perf_counter()
-
-        self.wld_World = World()
-
-        self.wld_World.GenerateHeightmap()
-        self.wld_World.GenerateTemperatureMap()
-        self.wld_World.GenerateHumidityMap()
-
-        self.wld_World.DumpToFile()
-        end = perf_counter()
-
-        print(f"World generation done. Time spent : {end - start}s")
 
     def GetInScreenMiddle(self, size):
         positionX = (self.display.get_width() / 2) - (size[0] / 2)
@@ -140,46 +108,80 @@ class DwarfGame:
         self.display.blit(self.displayText, position)
 
     def DisplayMiddleText(self, text: str, y: int, color: tuple):
-         self.displayText = self.font.render(text, True, color)
-         positionX = (self.display.get_width() / 2) - (self.displayText.get_width() / 2)
-         positionY = y
-         self.display.blit(self.displayText, (
-             positionX,
-             positionY
-         ))
-
-    def DisplayRightText(self, text: str, y: int, color: tuple):
-         self.displayText = self.font.render(text, True, color)
-         positionX = (self.display.get_width()) - (self.displayText.get_width())
-         positionY = y
-         self.display.blit(self.displayText, (
-             positionX,
-             positionY
-         ))
-
-    def DisplayLeftText(self, text: str, y: int, color: tuple):
-         self.displayText = self.font.render(text, True, color)
-         positionX = 0
-         positionY = y
-         self.display.blit(self.displayText, (
-             positionX,
-             positionY
-         ))
-
-    def DisplayScreenTitle(self, text: str, color: tuple):
-        self.displayText = self.titleFont.render(text, True, color)
+        self.displayText = self.font.render(text, True, color)
         positionX = (self.display.get_width() / 2) - (self.displayText.get_width() / 2)
-        positionY = 0
+        positionY = y
         self.display.blit(self.displayText, (
             positionX,
             positionY
         ))
 
+    def DisplayRightText(self, text: str, y: int, color: tuple):
+        self.displayText = self.font.render(text, True, color)
+        positionX = (self.display.get_width()) - (self.displayText.get_width())
+        positionY = y
+        self.display.blit(self.displayText, (
+            positionX,
+            positionY
+        ))
+
+    def DisplayLeftText(self, text: str, y: int, color: tuple):
+        self.displayText = self.font.render(text, True, color)
+        positionY = y
+        self.display.blit(self.displayText, (
+            0,
+            positionY
+        ))
+
+    def DisplayScreenTitle(self, text: str, color: tuple):
+        self.displayText = self.titleFont.render(text, True, color)
+        positionX = (self.display.get_width() / 2) - (self.displayText.get_width() / 2)
+        self.display.blit(self.displayText, (
+            positionX,
+            0
+        ))
+
     def Run(self):
+        self.running = True
+
         self.clock = pygame.time.Clock()
+
         loc = self.localization # Shorthand
 
+        # Menu stuff
+
+        self.currentScreen = Screen.COLONY
+
+        # Colony-related
+
+        self.colony.GiveHeadstart()
+
+        self.colony.AddMember(self.ps_Governor)
+        self.colony.AddMember(self.ps_Governor2)
+
+        # World Generation
+
+        print("World generation...")
+
+        start = perf_counter()
+
+        self.world = World()
+
+        self.world.GenerateHeightmap()
+        self.world.GenerateTemperatureMap()
+        self.world.GenerateHumidityMap()
+
+        self.world.DumpToFile()
+
+        end = perf_counter()
+
+        print(f"World generation done. Time spent : {end - start}s")
+
+        # Start of game loop
+
         while self.running:
+            # Background filling
+            self.display.fill(DARK_BLUE)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -212,7 +214,7 @@ class DwarfGame:
                     elif event.key == pygame.K_RETURN and self.currentScreen is Screen.BUILDING_MENU:
                         all_building_tasks [
                             self.buildingTaskSelectionIndex
-                        ].TryAt(self.col_Colony)
+                        ].TryAt(self.colony)
 
                     elif event.key == pygame.K_b:
                         self.currentScreen = Screen.BUILDINGS
@@ -293,9 +295,8 @@ class DwarfGame:
                     else:
                         pass
 
-            self.display.fill(DARK_BLUE)
-
             if self.currentScreen is not Screen.MAP:
+
                 self.DisplayText(loc.Get("keyguide.colony"), (0, 425), WHITE)
                 self.DisplayText(loc.Get("keyguide.buildings"), (0, 450), LIGHT_GRAY)
                 self.DisplayText(loc.Get("keyguide.inventory"), (0, 475), WHITE)
@@ -304,16 +305,19 @@ class DwarfGame:
                 self.DisplayText(loc.Get("keyguide.designations"), (0, 550), LIGHT_GRAY)
                 self.DisplayText(loc.Get("keyguide.map"), (0, 575), WHITE)
 
+            # Beginning of the horrible if-elif-elif-... to check what to show depending
+            # on the currentScreen.
+
             if self.currentScreen == Screen.COLONY:
 
                 self.DisplayScreenTitle(loc.Get("title.colony"), YELLOW)
 
-                self.DisplayMiddleText(loc.Get("colony.model", (self.col_Colony.name, self.col_Colony.faction.name)), 100, LIGHT_GRAY)
-                self.DisplayMiddleText(loc.Get("colony.population", len(self.col_Colony.members)), 150, LIGHT_GRAY)
+                self.DisplayMiddleText(loc.Get("colony.model", (self.colony.name, self.colony.faction.name)), 100, LIGHT_GRAY)
+                self.DisplayMiddleText(loc.Get("colony.population", len(self.colony.members)), 150, LIGHT_GRAY)
 
             elif self.currentScreen == Screen.MAP:
 
-                self.wld_World.ShowMap(self.display, self.mapCameraOffset)
+                self.world.ShowMap(self.display, self.mapCameraOffset)
 
             elif self.currentScreen == Screen.EVENTS:
 
@@ -332,9 +336,14 @@ class DwarfGame:
                 if eventQuantity == 0:
                     eventText = loc.Get("menu.empty")
                 else:
-                    eventText = loc.Get("selection.event", (self.eventSelectionIndex + 1, eventQuantity, self.eventLog[self.eventSelectionIndex]))
-
-                    # self.DisplayRightText(f"Select: <Enter>", 500, YELLOW)
+                    eventText = loc.Get(
+                        "selection.event",
+                        (
+                            self.eventSelectionIndex + 1,
+                            eventQuantity,
+                            self.eventLog[self.eventSelectionIndex]
+                        )
+                    )
 
                     self.DisplayRightText(loc.Get("menu.previous"), 425, YELLOW)
                     self.DisplayRightText(loc.Get("menu.next"), 450, YELLOW)
@@ -354,7 +363,7 @@ class DwarfGame:
                 self.DisplayScreenTitle(loc.Get("title.inventory"), YELLOW)
 
                 itemQuantity = len(
-                    self.col_Colony.inventory.keys()
+                    self.colony.inventory.keys()
                 )
 
                 if self.itemSelectionIndex > itemQuantity - 1:
@@ -376,11 +385,11 @@ class DwarfGame:
                         itemQuantity,
                         loc.Get(
                             list(
-                                self.col_Colony.inventory.items()
+                                self.colony.inventory.items()
                             )[self.itemSelectionIndex][0].name
                         ),
                         list(
-                            self.col_Colony.inventory.items()
+                            self.colony.inventory.items()
                         )[self.itemSelectionIndex][1]
                     ))
 
@@ -396,7 +405,7 @@ class DwarfGame:
             elif self.currentScreen == Screen.BUILDINGS:
 
                 buildingQuantity = len(
-                    self.col_Colony.buildings
+                    self.colony.buildings
                 )
 
                 if self.buildingSelectionIndex > buildingQuantity - 1:
@@ -419,7 +428,7 @@ class DwarfGame:
                         self.buildingSelectionIndex + 1,
                         buildingQuantity,
                         loc.Get(
-                            self.col_Colony.buildings[self.buildingSelectionIndex].name
+                            self.colony.buildings[self.buildingSelectionIndex].name
                         )
                     ))
 
@@ -438,15 +447,15 @@ class DwarfGame:
 
             elif self.currentScreen == Screen.BUILDING_TASKS:
                 self.DisplayScreenTitle(
-                    loc.Get("title.buildings_tasks", loc.Get(self.col_Colony.buildings[self.buildingSelectionIndex].name)),
+                    loc.Get("title.buildings_tasks", loc.Get(self.colony.buildings[self.buildingSelectionIndex].name)),
                     YELLOW
                 )
 
                 self.DisplayMiddleText(
                     loc.Get("building.activetasks", (
-                        loc.Get(self.col_Colony.buildings[self.buildingSelectionIndex].name),
+                        loc.Get(self.colony.buildings[self.buildingSelectionIndex].name),
                         len(
-                            self.col_Colony.buildings[self.buildingSelectionIndex].activeTasks
+                            self.colony.buildings[self.buildingSelectionIndex].activeTasks
                         )
                     )), 250, WHITE
                 )
@@ -515,7 +524,7 @@ class DwarfGame:
                 self.DisplayScreenTitle(loc.Get("title.units"), YELLOW)
 
                 unitsQuantity = len(
-                    self.col_Colony.members
+                    self.colony.members
                 )
 
                 if self.unitSelectionIndex == unitsQuantity:
@@ -527,7 +536,7 @@ class DwarfGame:
                 if unitsQuantity == 0:
                     unitText = loc.Get("empty")
                 else:
-                    unitText = loc.Get("selection.unit", (self.unitSelectionIndex + 1, unitsQuantity, self.col_Colony.members[self.unitSelectionIndex].name))
+                    unitText = loc.Get("selection.unit", (self.unitSelectionIndex + 1, unitsQuantity, self.colony.members[self.unitSelectionIndex].name))
 
                     self.DisplayRightText(loc.Get("menu.select"), 500, YELLOW)
 
