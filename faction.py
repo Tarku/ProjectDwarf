@@ -25,7 +25,7 @@ class Faction(FactionShell):
 
     def GenerateName(self, minLength = 1, maxLength = 4):
         '''
-        Generates a random name for the faction from the syllables in assets/names/factions.txt
+        Generates a random name for the faction from the syllables in assets/names/factions.txt .
         '''
 
         tempName = ""
