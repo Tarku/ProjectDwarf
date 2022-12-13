@@ -1,6 +1,6 @@
 # Pronoun.py
 
-from utils import GenderType
+from gender import *
 
 class Pronoun:
     '''
@@ -15,55 +15,10 @@ class Pronoun:
     possessivePronoun: str  # His Hers Theirs Its
 
     def __init__(
-            self,
-            subjectForm: str,
-            objectForm: str,
-            reflexiveForm: str,
-            possessiveForm: str,
-            possessivePronounForm: str):
+            self, base: str):
 
-        self.subject = subjectForm
-        self.object = objectForm
-        self.reflexive = reflexiveForm
-        self.possessive = possessiveForm
-        self.possessivePronoun = possessivePronounForm
-
-
-pr_Masculine = Pronoun(
-    "pronoun.masculine.subject",
-    "pronoun.masculine.object",
-    "pronoun.masculine.reflexive",
-    "pronoun.masculine.possessive_adjective",
-    "pronoun.masculine.possessive_pronoun",
-)
-
-pr_Feminine = Pronoun(
-    "pronoun.feminine.subject",
-    "pronoun.feminine.object",
-    "pronoun.feminine.reflexive",
-    "pronoun.feminine.possessive_adjective",
-    "pronoun.feminine.possessive_pronoun",
-)
-
-pr_Neuter = Pronoun(
-    "pronoun.neuter.subject",
-    "pronoun.neuter.object",
-    "pronoun.neuter.reflexive",
-    "pronoun.neuter.possessive_adjective",
-    "pronoun.neuter.possessive_pronoun",
-)
-
-pr_Inanimate = Pronoun(
-    "pronoun.inanimate.subject",
-    "pronoun.inanimate.object",
-    "pronoun.inanimate.reflexive",
-    "pronoun.inanimate.possessive_adjective",
-    "pronoun.inanimate.possessive_pronoun",
-)
-
-pronounsByGender = {
-    GenderType.MASCULINE: pr_Masculine,
-    GenderType.FEMININE: pr_Feminine,
-    GenderType.NEUTER: pr_Neuter,
-    GenderType.INANIMATE: pr_Inanimate
-}
+        self.subject = f"pronoun.{base}.subject"
+        self.object = f"pronoun.{base}.object"
+        self.reflexive = f"pronoun.{base}.reflexive"
+        self.possessive = f"pronoun.{base}.possessive_adjective"
+        self.possessivePronoun = f"pronoun.{base}.possessive_pronoun"

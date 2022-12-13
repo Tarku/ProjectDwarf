@@ -34,7 +34,7 @@ menu.empty=<empty>
 
 selection.event=Event %s/%s : %s
 selection.building=Building %s/%s : %s
-selection.unit=Unit %s/%s : %s
+selection.unit=Unit %s/%s : %s (%s %s) %s
 selection.task=Task %s/%s : %s
 selection.inventory=Item %s/%s : %s x%s
 
@@ -114,8 +114,26 @@ pronoun.neuter.reflexive=Themselves
 pronoun.neuter.possessive_adjective=Their
 pronoun.neuter.possessive_pronoun=Theirs
 
-pronoun.inanimate.subject=It
-pronoun.inanimate.object=It
-pronoun.inanimate.reflexive=Itself
-pronoun.inanimate.possessive_adjective=Its
-pronoun.inanimate.possessive_pronoun=Its
+pronoun.none.subject=It
+pronoun.none.object=It
+pronoun.none.reflexive=Itself
+pronoun.none.possessive_adjective=Its
+pronoun.none.possessive_pronoun=Its
+
+; Race-related
+
+race.human=Human
+race.dwarf=Dwarf
+race.vampire=Vampire
+race.high_elf=High Elf
+
+race.adjective.human=Human
+race.adjective.dwarf=Dwarven
+race.adjective.vampire=Vampire
+race.adjective.high_elf=High Elven
+
+; Age-related
+
+age.adult=Adult
+age.child=Child
+age.baby=Baby

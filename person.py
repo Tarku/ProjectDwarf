@@ -2,8 +2,8 @@
 
 from random import randint, choice
 from personality import Personality, all_personalities
-from utils import GenderType
-from pronoun import *
+from gender import *
+from race import *
 
 all_persons = []
 
@@ -19,19 +19,19 @@ class Person:
     isWorking: bool
     personality: Personality
     mood: int
-    gender: GenderType
-    pronoun: Pronoun
+    gender: Gender
+    race: Race
 
-    def __init__(self, name: str, gender: GenderType, age: int = 20, personality: Personality = None):
+    def __init__(self, name: str, gender: Gender, race: Race = rc_Dwarf, age: int = 20, personality: Personality = None):
         self.name = name
         self.isWorking = False
 
         self.age = age
         self.gender = gender
 
-        self.pronoun = pronounsByGender.get(
-            self.gender
-        )
+        self.race = race
+
+        self.pronoun = gender.pronoun
 
         if personality is None:
             self.personality = choice(all_personalities)
@@ -46,3 +46,14 @@ class Person:
 
     def GetPersonalityString(self):
         return self.personality.name
+
+    def GetGenderSymbol(self):
+        return self.gender.symbol
+
+    def GetAgeName(self):
+        if self.age > self.race.adultAge:
+            return "age.adult"
+        elif self.age > self.race.childAge:
+            return "age.child"
+        else:
+            return "age.baby"

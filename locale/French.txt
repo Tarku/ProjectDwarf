@@ -8,6 +8,7 @@ title.building_menu=Menu des bâtiments
 title.inventory=Inventaire
 title.buildings_tasks=Tâches du bâtiment %s
 title.designations=Ordres
+title.unit_presentation=Détails à propos de %s
 
 ; Keyguides
 
@@ -33,7 +34,7 @@ menu.empty=<vide>
 
 selection.event=Évènement %s/%s : %s
 selection.building=Bâtiment %s/%s : %s
-selection.unit=Unité %s/%s : %s
+selection.unit=Unité %s/%s : %s (%s %s) %s
 selection.task=Tâche %s/%s : %s
 selection.inventory=Objet %s/%s : %s x%s
 
@@ -81,3 +82,58 @@ material.iron=Fer
 material.steel=Acier
 material.gold=Or
 material.silver=Argent
+
+; Unit-related
+
+unit.presentation=%s est plutôt %s. %s a %s ans.
+
+; Personalities
+
+personality.calm=Calme
+personality.shy=Timide
+personality.outgoing=Extraverti
+personality.irritable=Irritable
+
+; Pronouns
+
+pronoun.masculine.subject=Il
+pronoun.masculine.object=Lui
+pronoun.masculine.reflexive=Lui-même
+pronoun.masculine.possessive_adjective=Son/sa
+pronoun.masculine.possessive_pronoun=à lui
+
+pronoun.feminine.subject=Elle
+pronoun.feminine.object=Elle
+pronoun.feminine.reflexive=Elle-même
+pronoun.feminine.possessive_adjective=Son/sa
+pronoun.feminine.possessive_pronoun=à elle
+
+pronoun.neuter.subject=Iel
+pronoun.neuter.object=Ellui
+pronoun.neuter.reflexive=Ellui-même
+pronoun.neuter.possessive_adjective=Son/sa
+pronoun.neuter.possessive_pronoun=à ellui
+
+pronoun.none.subject=Ol
+pronoun.none.object=Lo
+pronoun.none.reflexive=Lo-même
+pronoun.none.possessive_adjective=Son/sa
+pronoun.none.possessive_pronoun=à lo
+
+; Race-related
+
+race.human=Humain
+race.dwarf=Nain
+race.vampire=Vampire
+race.high_elf=Haut Elfe
+
+race.adjective.human=Humain
+race.adjective.dwarf=Nain
+race.adjective.vampire=Vampire
+race.adjective.high_elf=Haut Elfe
+
+; Age-related
+
+age.adult=Adulte
+age.child=Enfant
+age.baby=Bébé

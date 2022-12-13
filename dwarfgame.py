@@ -537,7 +537,21 @@ class DwarfGame:
                 if unitsQuantity == 0:
                     unitText = loc.Get("menu.empty")
                 else:
-                    unitText = loc.Get("selection.unit", (self.unitSelectionIndex + 1, unitsQuantity, self.colony.members[self.unitSelectionIndex].name))
+                    unitText = loc.Get(
+                        "selection.unit",
+                        (
+                            self.unitSelectionIndex + 1,
+                            unitsQuantity,
+                            self.colony.members[self.unitSelectionIndex].name,
+                            loc.Get(
+                                self.colony.members[self.unitSelectionIndex].race.adjective
+                            ),
+                            loc.Get(
+                                self.colony.members[self.unitSelectionIndex].GetAgeName()
+                            ),
+                            self.colony.members[self.unitSelectionIndex].gender.symbol
+                        )
+                    )
 
                     self.DisplayRightText(loc.Get("menu.select"), 500, YELLOW)
 

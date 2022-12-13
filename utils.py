@@ -52,19 +52,8 @@ TILES_PER_SCREEN = 50
 HEADSTART_QUANTITY = 2000
 
 # Person-related
-class GenderType(Enum):
-    MASCULINE = 0,
-    FEMININE = 1,
-    NEUTER = 2,
-    INANIMATE = 3
 
 
-all_genders = [
-    GenderType.MASCULINE,
-    GenderType.FEMININE,
-    GenderType.NEUTER,
-    GenderType.INANIMATE
-]
 # Faction-related
 
 FACTION_SYLLABLES_PATH = "assets\\names\\factions\\syllables.txt"

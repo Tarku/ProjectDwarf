@@ -35,8 +35,8 @@ class Colony:
                 Person(
                     name=f"K{_ + 1}",
                     gender=choice([
-                        GenderType.FEMININE,
-                        GenderType.MASCULINE
+                        gd_Masculine,
+                        gd_Feminine
                     ]),
                     age=randint(20, 50)
                 )
