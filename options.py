@@ -1,9 +1,6 @@
 # Options.py
 
-SEPARATOR = "="
-COMMENT_SYMBOL = "; "
-TRUE = "TRUE"
-FALSE = "FALSE"
+from utils import *
 
 class Options:
     '''

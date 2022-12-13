@@ -3,8 +3,8 @@
 from random import randint
 from colony import *
 from person import *
-from eventtype import *
 from itempair import *
+from utils import *
 
 class GameEvent:
 

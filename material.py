@@ -1,7 +1,5 @@
 # Material.py
 
-import pygame
-
 mat_all = []
 
 class Material:
@@ -14,11 +12,6 @@ class Material:
     def __init__(self, name, value):
         self.name = name
         self.value = value
-
-        #self.icon = pygame.image.load(
-        #   f"assets\\images\\{name.lower()}.png"
-        #)
-
     def Register(self):
         mat_all.append(self)
         return self

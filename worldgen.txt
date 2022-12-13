@@ -1,5 +1,3 @@
-dump_world=false
-verbose_logging=false
 octaves=18
 width=200
 height=200

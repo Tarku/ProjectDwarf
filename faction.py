@@ -2,9 +2,9 @@
 
 from random import randint
 from person import *
-from factionrelationship import *
+from utils import FactionRelationship, FACTION_SYLLABLES_PATH
 
-FACTION_SYLLABLES_PATH = "assets\\names\\factions\\syllables.txt"
+all_factions = []
 
 class FactionShell:
     pass
@@ -22,6 +22,10 @@ class Faction(FactionShell):
         self.members = []
 
         self.relationships = {}
+
+    def Register(self):
+        all_factions.append(self)
+        return self
 
     def GenerateName(self, minLength = 1, maxLength = 4):
         '''
@@ -45,13 +49,6 @@ class Faction(FactionShell):
         self.name = tempName
 
         syllableFile.close()
-
-
-
-
-
-
-
 
     def AddRelationship(self, otherFaction, relationshipStatus: FactionRelationship):
 

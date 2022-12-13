@@ -15,18 +15,9 @@ from faction import *
 from workshop import *
 from weapon import *
 from localization import *
-from screentype import *
 from options import *
 from world import *
 from utils import *
-
-
-ICON_IMAGE = pygame.image.load(
-    "assets\\images\\icon.png"
-)
-
-TITLE = "Dwarf Game"
-
 
 class DwarfGame:
 
@@ -39,6 +30,8 @@ class DwarfGame:
     clock: pygame.time.Clock
     displayText: pygame.Surface
     world: World
+    colony: Colony
+    faction: Faction
     currentScreen: Screen
 
     eventLog: list
@@ -74,13 +67,6 @@ class DwarfGame:
 
         self.font = pygame.font.SysFont(self.fontName, self.normalFontSize)
         self.titleFont = pygame.font.SysFont(self.fontName, self.titleFontSize)
-
-        self.fc_Faction = Faction("Newcomers")
-        self.fc_AllyFaction = Faction()
-
-        self.fc_AllyFaction.GenerateName(minLength=2, maxLength=3)
-
-        self.colony = Colony("New Colony", self.fc_Faction).Register()
 
         self.ps_Governor = Person("Governor James").Register()
         self.ps_Governor2 = Person("Governor Kol").Register()
@@ -146,13 +132,22 @@ class DwarfGame:
 
         self.clock = pygame.time.Clock()
 
-        loc = self.localization # Shorthand
+        loc = self.localization  # Shorthand for my sanity
 
         # Menu stuff
 
         self.currentScreen = Screen.COLONY
+        self.eventLog = list()
+
+        # Faction-related
+
+        self.faction = Faction(name="New Arrivals")
+        self.faction.Register()
 
         # Colony-related
+
+        self.colony = Colony(name="New Town", faction=self.faction)
+        self.colony.Register()
 
         self.colony.GiveHeadstart()
 
@@ -170,8 +165,6 @@ class DwarfGame:
         self.world.GenerateHeightmap()
         self.world.GenerateTemperatureMap()
         self.world.GenerateHumidityMap()
-
-        self.world.DumpToFile()
 
         end = perf_counter()
 

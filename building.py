@@ -1,7 +1,5 @@
 # Building.py
 
-from buildingstats import*
-
 class Building:
 
     '''

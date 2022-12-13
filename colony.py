@@ -3,10 +3,9 @@
 from material import *
 from faction import *
 from itempair import *
+from utils import *
 
 all_colonies = []
-
-HEADSTART_QUANTITY = 2000
 
 class Colony:
 

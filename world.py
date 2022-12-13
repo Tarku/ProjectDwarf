@@ -27,6 +27,9 @@ class World:
     def __init__(self, seed: int = fTime()):
         self.seed = seed
 
+        self.options = Options(
+            "worldgen.txt"
+        )
         self.worldgenOptions = Options(
             "worldgen.txt"
         )
@@ -51,8 +54,7 @@ class World:
         self.width = self.worldgenOptions.Get("width")
         self.height = self.worldgenOptions.Get("height")
 
-        self.worldDump = self.worldgenOptions.GetBool("dump_world")
-        self.verboseLogging = self.worldgenOptions.GetBool("verbose_logging")
+        self.verboseLogging = self.options.GetBool("verbose_logging")
 
         self.size = (
             self.width,
@@ -65,9 +67,6 @@ class World:
         self.humidityNoise = PerlinNoise(seed=seed, octaves = 12)
 
     def DumpToFile(self):
-        if not self.worldDump:
-            return
-
         dumpedHeightmap = ""
         dumpedTemperatureMap = ""
         dumpedHumidityMap = ""

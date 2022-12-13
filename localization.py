@@ -72,10 +72,3 @@ class Localization:
             formattedString = self.languageData.data[string]
 
         return formattedString
-
-    def Replace(self, source):
-        pass
-
-
-
-

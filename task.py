@@ -1,10 +1,10 @@
 # Task.py
 
-from tasktypes import *
 from itempair import *
 from weapon import *
 from colony import *
 from building import *
+from utils import *
 
 all_tasks = []
 all_building_tasks = []
@@ -156,7 +156,7 @@ class Task:
 
 
 ts_CraftDarkScythe = Task(
-    name = "Craft Dark Scythe",
+    name = "task.craftdarkscythe",
     requirements = [
         ItemPair(
             mat_GOLD,
