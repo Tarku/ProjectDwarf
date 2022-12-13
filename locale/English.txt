@@ -8,6 +8,7 @@ title.building_menu=Building Menu
 title.inventory=Inventory
 title.buildings_tasks=Task(s) of building %s
 title.designations=Designations
+title.unit_presentation=Details of %s
 
 ; Keyguides
 
@@ -81,3 +82,40 @@ material.iron=Iron
 material.steel=Steel
 material.gold=Gold
 material.silver=Silver
+
+; Unit-related
+
+unit.presentation=%s is %s. %s is %s years old.
+
+; Personalities
+
+personality.calm=Calm
+personality.shy=Shy
+personality.outgoing=Outgoing
+personality.irritable=Irritable
+
+; Pronouns
+
+pronoun.masculine.subject=He
+pronoun.masculine.object=Him
+pronoun.masculine.reflexive=Himself
+pronoun.masculine.possessive_adjective=His
+pronoun.masculine.possessive_pronoun=His
+
+pronoun.feminine.subject=She
+pronoun.feminine.object=Her
+pronoun.feminine.reflexive=Herself
+pronoun.feminine.possessive_adjective=Her
+pronoun.feminine.possessive_pronoun=Hers
+
+pronoun.neuter.subject=They
+pronoun.neuter.object=Them
+pronoun.neuter.reflexive=Themselves
+pronoun.neuter.possessive_adjective=Their
+pronoun.neuter.possessive_pronoun=Theirs
+
+pronoun.inanimate.subject=It
+pronoun.inanimate.object=It
+pronoun.inanimate.reflexive=Itself
+pronoun.inanimate.possessive_adjective=Its
+pronoun.inanimate.possessive_pronoun=Its
