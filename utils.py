@@ -28,7 +28,8 @@ class Screen(Enum):
     INVENTORY = 5,
     UNITS = 6,
     DESIGNATIONS = 7,
-    MAP = 8
+    MAP = 8,
+    UNIT_PRESENTATION = 9
 
 # Tasks
 
@@ -50,6 +51,20 @@ TILES_PER_SCREEN = 50
 
 HEADSTART_QUANTITY = 2000
 
+# Person-related
+class GenderType(Enum):
+    MASCULINE = 0,
+    FEMININE = 1,
+    NEUTER = 2,
+    INANIMATE = 3
+
+
+all_genders = [
+    GenderType.MASCULINE,
+    GenderType.FEMININE,
+    GenderType.NEUTER,
+    GenderType.INANIMATE
+]
 # Faction-related
 
 FACTION_SYLLABLES_PATH = "assets\\names\\factions\\syllables.txt"
