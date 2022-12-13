@@ -4,6 +4,7 @@ from material import *
 from faction import *
 from itempair import *
 from utils import *
+from personality import *
 
 all_colonies = []
 
@@ -27,6 +28,19 @@ class Colony:
     def Register(self):
         all_colonies.append(self)
         return self
+
+    def Populate(self, count: int):
+        for _ in range(count):
+            self.members.append(
+                Person(
+                    name=f"K{_ + 1}",
+                    gender=choice([
+                        GenderType.FEMININE,
+                        GenderType.MASCULINE
+                    ]),
+                    age=randint(20, 50)
+                )
+            )
 
     def GiveHeadstart(self):
         for material in mat_all:
