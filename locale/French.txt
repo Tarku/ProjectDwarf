@@ -1,0 +1,83 @@
+; Titles
+
+title.colony=Colonie
+title.units=Unités
+title.events=Évènements
+title.buildings=Bâtiments
+title.building_menu=Menu des bâtiments
+title.inventory=Inventaire
+title.buildings_tasks=Tâches du bâtiment %s
+title.designations=Ordres
+
+; Keyguides
+
+keyguide.colony=Colonie : <C>
+keyguide.events=Évènements : <E>
+keyguide.units=Unités : <U>
+keyguide.buildings=Bâtiments : <B>
+keyguide.inventory=Inventaire : <I>
+keyguide.tasks=Tâches : <T>
+keyguide.designations=Ordres : <D>
+keyguide.buildingmenu=Ouvrir le menu des bâtiments : <Entrée>
+keyguide.escape=Revenir au menu précédent : <Echap>
+keyguide.map=Mappemonde : <M>
+
+; Menu
+
+menu.previous=Précédent : <Flèche haut>
+menu.next=Suivant : <Flèche bas>
+menu.select=Sélectionner : <Entrée>
+menu.empty=<vide>
+
+; Selection-related
+
+selection.event=Évènement %s/%s : %s
+selection.building=Bâtiment %s/%s : %s
+selection.unit=Unité %s/%s : %s
+selection.task=Tâche %s/%s : %s
+selection.inventory=Objet %s/%s : %s x%s
+
+; Building-related
+
+building.activetasks=Le bâtiment %s a %s tâche(s) active(s).
+
+building.carpenterstable=Table du charpentier
+building.masonstable=Table du maçon
+
+; Colony-related
+
+colony.newcolony=Nouvelle colonie
+colony.model=Colonie %s de la faction %s
+colony.population=Population : %s
+colony.buildings=La colonie a actuellement %s bâtiments.
+colony.inventory=La colonie a dans son inventaire %s types d'objets.
+
+; Single names
+
+name.unit=Unité
+name.event=Évènement
+name.colony=Colonie
+name.task=Tâche
+
+; Task-related
+
+task.build=Construire
+task.buildcarpenterstable=Construire une table de charpentier
+task.buildmasonstable=Constuire une table de maçon
+task.cost=Coût : %s
+
+; Event-related
+
+event.nameprompt=%s se demande comment la colonie devrait s'appeler.
+event.visitor=%s visite la colonie.
+event.visitorgift=%s, un visiteur, a offert %s à la colonie.
+
+; Materials
+
+material.wood=Bois
+material.stone=Pierre
+material.copper=Cuivre
+material.iron=Fer
+material.steel=Acier
+material.gold=Or
+material.silver=Argent

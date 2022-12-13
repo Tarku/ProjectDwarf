@@ -1,0 +1,35 @@
+# Colors.py
+
+BLACK = (0, 0, 0)
+
+DARK_GRAY = (63, 63, 63)
+
+GRAY = (127, 127, 127)
+
+LIGHT_GRAY = (191, 191, 191)
+
+WHITE = (255, 255, 255)
+
+RED = (255, 0, 0)
+
+DARK_RED = (127, 0, 0)
+
+GREEN = (0, 255, 0)
+
+DARK_GREEN = (0, 127, 0)
+
+BLUE = (0, 0, 255)
+
+DARK_BLUE = (0, 0, 127)
+
+YELLOW = (255, 255, 0)
+
+DARK_YELLOW = (127, 127, 0)
+
+CYAN = (0, 255, 255)
+
+DARK_CYAN = (0, 127, 127)
+
+MAGENTA = (255, 0, 255)
+
+DARK_MAGENTA = (127, 0, 127)

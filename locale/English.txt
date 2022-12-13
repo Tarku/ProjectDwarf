@@ -1,0 +1,83 @@
+; Titles
+
+title.colony=Colony
+title.units=Units
+title.events=Events
+title.buildings=Buildings
+title.building_menu=Building Menu
+title.inventory=Inventory
+title.buildings_tasks=Task(s) of building %s
+title.designations=Designations
+
+; Keyguides
+
+keyguide.colony=Colony : <C>
+keyguide.events=Events : <E>
+keyguide.units=Units : <U>
+keyguide.buildings=Buildings : <B>
+keyguide.inventory=Inventory : <I>
+keyguide.tasks=Tasks : <T>
+keyguide.designations=Designations : <D>
+keyguide.buildingmenu=Open the building menu : <Enter>
+keyguide.escape=Go back to the previous menu : <Escape>
+keyguide.map=Map : <M>
+
+; Menu
+
+menu.previous=Previous : <Up arrow>
+menu.next=Next : <Down arrow>
+menu.select=Select : <Enter>
+menu.empty=<empty>
+
+; Selection-related
+
+selection.event=Event %s/%s : %s
+selection.building=Building %s/%s : %s
+selection.unit=Unit %s/%s : %s
+selection.task=Task %s/%s : %s
+selection.inventory=Item %s/%s : %s x%s
+
+; Building-related
+
+building.activetasks=Building %s has %s active task(s).
+
+building.carpenterstable=Carpenter's Table
+building.masonstable=Mason's Table
+
+; Colony-related
+
+colony.newcolony=New Colony
+colony.model=Colony %s of Faction %s
+colony.population=Population : %s
+colony.buildings=The colony currently has %s buildings.
+colony.inventory=The colony currently has %s types of items in total.
+
+; Single names
+
+name.unit=Unit
+name.event=Event
+name.colony=Colony
+name.task=Task
+
+; Task-related
+
+task.build=Build
+task.buildcarpenterstable=Build carpenter's table
+task.buildmasonstable=Build mason's table
+task.cost=Cost : %s
+
+; Event-related
+
+event.nameprompt=%s is asking how the colony should be named.
+event.visitor=%s is visiting the colony.
+event.visitorgift=%s, a visitor, has gifted %s to the colony.
+
+; Materials
+
+material.wood=Wood
+material.stone=Stone
+material.copper=Copper
+material.iron=Iron
+material.steel=Steel
+material.gold=Gold
+material.silver=Silver

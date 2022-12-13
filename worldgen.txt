@@ -1,0 +1,14 @@
+dump_world=false
+verbose_logging=false
+octaves=18
+width=200
+height=200
+sea_level=-0.21
+low_hills_level=0.15
+hills_level=0.31
+mountains_level=0.97
+hot_level=0.8
+warm_level=0.4
+temperate_level=-0.2
+cold_level=-0.7
+freezing_level=-1

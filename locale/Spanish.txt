@@ -1,0 +1,78 @@
+; Titles
+
+title.colony=Colonia
+title.units=Unidades
+title.events=Eventos
+title.buildings=Edificios
+title.building_menu=Menú de los edificios
+title.inventory=Inventario
+title.buildings_tasks=Tareas del edificio %s
+title.designations=Órdenes
+
+; Keyguides
+
+keyguide.colony=Colonia : <C>
+keyguide.events=Eventos : <E>
+keyguide.units=Unidades : <U>
+keyguide.buildings=Edificios : <B>
+keyguide.inventory=Inventario : <I>
+keyguide.tasks=Tareas : <T>
+keyguide.designations=Órdenes : <D>
+keyguide.buildingmenu=Abrir el menú de los edificios : <Intro>
+keyguide.escape=Venir al menú previo : <Escape>
+
+; Menu
+
+menu.previous=Previo : <Tecla Arriba>
+menu.next=Siguiente : <Tecla Bajá>
+menu.select=Seleccionar : <Intro>
+menu.empty=<vacío>
+
+; Selection-related
+
+selection.event=Evento %s/%s : %s
+selection.building=Edificio %s/%s : %s
+selection.unit=Unidad %s/%s : %s
+selection.task=Tarea %s/%s : %s
+selection.inventoryitem=Objeto %s/%s : %s
+
+; Building-related
+
+building.activetasks=El edificio %s tiene %s tarea(s) activa(s).
+
+building.carpenterstable=Mesa del carpintero
+building.masonstable=Mesa del albañil
+
+; Colony-related
+
+colony.model=Colonia %s de la facción %s
+colony.population=Población : %s
+colony.buildings=La colonia actualmente tiene %s edificios.
+
+; Single names
+
+name.unit=Unidad
+name.event=Evento
+name.colony=Colonia
+name.task=Tarea
+
+; Task-related
+
+task.build=Construir
+task.buildcarpenterstable=Construir una mesa del carpintero
+task.buildmasonstable=Constuir une mesa del albañil
+task.cost=Costo : %s
+
+; Event-related
+
+event.nameprompt=%s pregunta cómo se llamará la colonia
+
+; Materials
+
+material.wood=Madera
+material.stone=Piedra
+material.copper=Cobre
+material.iron=Hierro
+material.steel=Acero
+material.gold=Oro
+material.silver=Plata

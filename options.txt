@@ -1,0 +1,6 @@
+window_height=800
+window_width=800
+font=Cambria
+normal_font_size=16
+title_font_size=32
+language=French
