@@ -368,7 +368,7 @@ class DwarfGame:
                 self.DisplayMiddleText(
                     loc.Get("colony.inventory", itemQuantity), 200, WHITE)
 
-                if itemQuantity is 0:
+                if itemQuantity == 0:
                     itemText = loc.Get("menu.empty")
                 else:
                     itemText = loc.Get("selection.inventory", (
@@ -412,7 +412,7 @@ class DwarfGame:
                 self.DisplayMiddleText(
                      loc.Get("colony.buildings", buildingQuantity), 200, WHITE)
 
-                if buildingQuantity is 0:
+                if buildingQuantity == 0:
                     buildingText = loc.Get("menu.empty")
                 else:
                     buildingText = loc.Get("selection.building", (
@@ -466,7 +466,7 @@ class DwarfGame:
                 if self.buildingTaskSelectionIndex < 0:
                     self.buildingTaskSelectionIndex = taskQuantity - 1
 
-                if taskQuantity is 0:
+                if taskQuantity == 0:
                     taskText = loc.Get("menu.empty")
                 else:
                     task = all_building_tasks[self.buildingTaskSelectionIndex]
@@ -524,7 +524,7 @@ class DwarfGame:
                 if self.unitSelectionIndex < 0:
                     self.unitSelectionIndex = unitsQuantity - 1
 
-                if unitsQuantity is 0:
+                if unitsQuantity == 0:
                     unitText = loc.Get("empty")
                 else:
                     unitText = loc.Get("selection.unit", (self.unitSelectionIndex + 1, unitsQuantity, self.col_Colony.members[self.unitSelectionIndex].name))
