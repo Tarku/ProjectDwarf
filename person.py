@@ -44,6 +44,15 @@ class Person:
         all_persons.append(self)
         return self
 
+    def GenerateRandomName(self):
+        formattedRaceName = self.race.name.removeprefix(
+            "race."
+        )
+        self.name = choice(
+            all_names_by_race.get(formattedRaceName)
+        )
+        self.name = self.name
+
     def GetPersonalityString(self):
         return self.personality.name
 

@@ -5,6 +5,7 @@ from weapon import *
 from colony import *
 from building import *
 from utils import *
+from options import *
 
 all_tasks = []
 all_building_tasks = []
@@ -18,10 +19,18 @@ class Task:
     Use the "ts_" prefix for in-code variable identification
     '''
 
+    name: str
+    requirements: list[ItemPair, ...]
+    results: dict
+    options: Options
+    verboseLogging: bool
+
     def __init__(self, name: str, requirements: list, results: dict):
         self.name = name
         self.requirements = requirements # [ItemPair(mat_WOOD, 20)]
         self.results = results # {TaskResultTypes.BUILDING: ws_CarpentersTable}
+        self.options = Options("options.txt")
+        self.verboseLogging = self.options.GetBool("verbose_logging")
 
     def GetRequirements(self):
         return self.requirements
@@ -51,9 +60,10 @@ class Task:
         return [type(result) for result in self.results.keys()]
 
     def Register(self, registerType = TaskType.DEFAULT):
-        print(
-            f"Successfully registered Task <{self.name}>."
-        )
+        if self.verboseLogging:
+            print(
+                f"Successfully registered Task <{self.name}>."
+            )
         if registerType is TaskType.DEFAULT:
             all_tasks.append(self)
         elif registerType is TaskType.CRAFT_ITEM:
@@ -96,9 +106,10 @@ class Task:
                 )
                 return None
 
-            print(
-                f"Successfully fit Requirement <{requirementNumber}> for Task <{self.name}>."
-            )
+            if self.verboseLogging:
+                print(
+                    f"Successfully fit Requirement <{requirementNumber}> for Task <{self.name}>."
+                )
 
             requirementNumber += 1
 
@@ -120,9 +131,10 @@ class Task:
                 else:
                     inventory[item] += count
 
-                print(
-                    f"Successfully performed Task <{self.name}>."
-                )
+                if self.verboseLogging:
+                    print(
+                        f"Successfully performed Task <{self.name}>."
+                    )
 
             elif resultType is TaskResultType.BUILDING:
 
@@ -133,9 +145,10 @@ class Task:
                     )
                     return None
 
-                print(
-                    f"Successfully performed Task <{self.name}>."
-                )
+                if self.verboseLogging:
+                    print(
+                        f"Successfully performed Task <{self.name}>."
+                    )
                 buildings.append(result)
 
             else:

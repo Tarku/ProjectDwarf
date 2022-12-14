@@ -29,17 +29,17 @@ class Colony:
         all_colonies.append(self)
         return self
 
-    def Populate(self, count: int):
+    def Populate(self, count: int, genders: list, races: list, minAge: int = 20, maxAge: int = 80):
         for _ in range(count):
+            person = Person(
+                name="",
+                race=choice(races),
+                gender=choice(genders),
+                age=randint(minAge, maxAge)
+            )
+            person.GenerateRandomName()
             self.members.append(
-                Person(
-                    name=f"K{_ + 1}",
-                    gender=choice([
-                        gd_Masculine,
-                        gd_Feminine
-                    ]),
-                    age=randint(20, 50)
-                )
+                person
             )
 
     def GiveHeadstart(self):

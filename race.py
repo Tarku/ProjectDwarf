@@ -1,6 +1,9 @@
 # Race.py
 
+from random import choice
+
 all_races = []
+all_names_by_race = {}
 
 class Race:
     '''
@@ -25,6 +28,26 @@ class Race:
         all_races.append(self)
         return self
 
+    def LoadNames(self):
+        formattedRaceName = self.name.removeprefix(
+            "race."
+        )
+        filePath = f"assets\\names\\persons\\{formattedRaceName}.txt"
+
+        try:
+            with open(filePath, "r", encoding="utf-8") as file:
+                readFile = file.read()
+                cutFile = readFile.split("\n")
+
+                cutFile = list(
+                    map(lambda x: x.capitalize(), cutFile)
+                )
+
+                all_names_by_race[formattedRaceName] = cutFile
+
+        except FileNotFoundError:
+            all_names_by_race[formattedRaceName] = ["Dunno McUnknown"]
+
 
 rc_Human = Race(
     name="race.human",
@@ -34,6 +57,7 @@ rc_Human = Race(
     adultAge=12
 )
 rc_Human.Register()
+rc_Human.LoadNames()
 
 rc_Dwarf = Race(
     name="race.dwarf",
@@ -43,6 +67,7 @@ rc_Dwarf = Race(
     adultAge=12
 )
 rc_Dwarf.Register()
+rc_Dwarf.LoadNames()
 
 rc_Vampire = Race(
     name="race.vampire",
@@ -52,6 +77,7 @@ rc_Vampire = Race(
     adultAge=220
 )
 rc_Vampire.Register()
+rc_Vampire.LoadNames()
 
 rc_HighElf = Race(
     name="race.high_elf",
@@ -61,3 +87,4 @@ rc_HighElf = Race(
     adultAge=110
 )
 rc_HighElf.Register()
+rc_HighElf.LoadNames()

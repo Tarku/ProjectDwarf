@@ -127,6 +127,10 @@ class DwarfGame:
     def Run(self):
         self.running = True
 
+        print(
+            "Game started."
+        )
+
         self.clock = pygame.time.Clock()
 
         loc = self.localization  # Shorthand for my sanity
@@ -148,7 +152,13 @@ class DwarfGame:
 
         self.colony.GiveHeadstart()
 
-        self.colony.Populate(5)
+        self.colony.Populate(
+            count=15,
+            races=[rc_Dwarf, rc_Human],
+            genders=[gd_Masculine, gd_Feminine],
+            minAge=1,
+            maxAge=8000
+        )
 
         # World Generation
 
