@@ -219,7 +219,6 @@ class DwarfGame:
                         elif self.currentScreen is Screen.UNITS:
                             self.currentScreen = Screen.UNIT_PRESENTATION
 
-
                     elif event.key == pygame.K_b:
                         self.currentScreen = Screen.BUILDINGS
 
@@ -238,7 +237,6 @@ class DwarfGame:
 
                         else:
                             self.currentScreen = Screen.COLONY
-
 
                     elif event.key == pygame.K_UP:
                         if self.currentScreen is Screen.BUILDINGS:
@@ -554,10 +552,11 @@ class DwarfGame:
                             unitsQuantity,
                             self.colony.members[self.unitSelectionIndex].name,
                             loc.Get(
-                                self.colony.members[self.unitSelectionIndex].race.adjective
+
+                                self.colony.members[self.unitSelectionIndex].GetAgeName()
                             ),
                             loc.Get(
-                                self.colony.members[self.unitSelectionIndex].GetAgeName()
+                                self.colony.members[self.unitSelectionIndex].race.name
                             ),
                             self.colony.members[self.unitSelectionIndex].gender.symbol
                         )
