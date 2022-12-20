@@ -2,16 +2,13 @@
 
 
 from perlin_noise import PerlinNoise
-from time import time as fTime, perf_counter
+from time import time as fTime
 from numpy import arange
 from os import mkdir
 from pygame.surface import Surface
 from options import Options
 from pygame import image, display, sprite, transform
-from random import choice
-from enum import Enum
 from utils import *
-from itertools import chain
 
 class World:
 

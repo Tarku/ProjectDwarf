@@ -69,6 +69,7 @@ event.nameprompt=%s pregunta cómo se llamará la colonia
 
 ; Materials
 
+material.basalt=Basalto
 material.wood=Madera
 material.stone=Piedra
 material.copper=Cobre

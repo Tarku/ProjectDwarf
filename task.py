@@ -94,24 +94,60 @@ class Task:
                 )
                 return None
 
-            if item not in inventory:
-                print(
-                    f"Can't perform Task <{self.name}>. Cause: Unavailable Item <{item.name}> in Colony <{colony.name}>."
-                )
-                return None
+            if type(item) is MaterialType:
 
-            if inventory[item] < count:
-                print(
-                    f"Can't perform Task <{self.name}>. Cause: Not enough of Item <{item.name}> in Colony <{colony.name}>."
-                )
-                return None
+                if item not in colony.GetCountByMaterialType():
+                    print(
+                        f"Can't perform Task <{self.name}>. Cause: MaterialType <{item.name}> inexistant in inventory."
+                    )
+                    return
 
-            if self.verboseLogging:
-                print(
-                    f"Successfully fit Requirement <{requirementNumber}> for Task <{self.name}>."
-                )
+                aftermath = colony.GetCountByMaterialType()[item] - count
 
-            requirementNumber += 1
+                if aftermath < 0:
+                    print(
+                        f"Can't perform Task <{self.name}>. Cause: MaterialType <{item.name}> is in insufficient quantity."
+                    )
+                    return
+
+                addedItems = 0
+
+                while colony.GetCountByMaterialType()[item] > aftermath:
+                    for invItem in inventory.keys():
+                        if addedItems < count and invItem.materialType == item:
+                            while inventory[invItem] > 0:
+                                inventory[invItem] -= 1
+                                addedItems += 1
+
+                                if addedItems < count:
+                                    continue
+                                else:
+                                    break
+
+                colony.UpdateInventory()
+
+                requirementNumber += 1
+
+            else:
+
+                if item not in inventory:
+                    print(
+                        f"Can't perform Task <{self.name}>. Cause: Unavailable Item <{item.name}> in Colony <{colony.name}>."
+                    )
+                    return None
+
+                if inventory[item] < count:
+                    print(
+                        f"Can't perform Task <{self.name}>. Cause: Not enough of Item <{item.name}> in Colony <{colony.name}>."
+                    )
+                    return None
+
+                if self.verboseLogging:
+                    print(
+                        f"Successfully fit Requirement <{requirementNumber}> for Task <{self.name}>."
+                    )
+
+                requirementNumber += 1
 
         for (resultType, result) in self.results.items():
 
@@ -158,30 +194,21 @@ class Task:
                 )
                 return None
 
-        if requirementNumber is len(self.requirements):
-            for requirement in self.requirements:
-                item = requirement.item
-
-                count = requirement.count
-                inventory[item] -= count
-
-            return True
-
 
 ts_CraftDarkScythe = Task(
-    name = "task.craftdarkscythe",
-    requirements = [
+    name="task.craftdarkscythe",
+    requirements=[
         ItemPair(
-            mat_GOLD,
+            mtt_GoldBar,
             50
         ),
         ItemPair(
-            mat_STEEL,
+            mtt_SteelBar,
             20
         )
     ],
-    results = {
-        TaskResultType.ITEM : ItemPair(wp_DarkScythe, 1)
+    results={
+        TaskResultType.ITEM: ItemPair(wp_DarkScythe, 1)
     }
 ).Register()
 

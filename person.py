@@ -1,6 +1,6 @@
 # Person.py
 
-from random import randint, choice
+from random import choice
 from personality import Personality, all_personalities
 from gender import *
 from race import *

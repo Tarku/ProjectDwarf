@@ -42,17 +42,27 @@ class Colony:
                 person
             )
 
+    def GetCountByMaterialType(self):
+        temp = {}
+
+        for (item, count) in self.inventory.items():
+            itemMaterialType = item.materialType
+
+            if itemMaterialType in temp.keys():
+                temp[itemMaterialType] += count
+            else:
+                temp[itemMaterialType] = count
+
+        return temp
+
     def GiveHeadstart(self):
-        for material in mat_all:
-            self.AddToInventory(
-                ItemPair(
-                    material,
-                    HEADSTART_QUANTITY
-                )
-            )
+        for item in all_materials:
+            self.inventory[item] = HEADSTART_QUANTITY
+
 
     def UpdateInventory(self):
-        for (item, count) in self.inventory.items():
+        for item in list(self.inventory.keys()):
+            count = self.inventory[item]
             if count <= 0:
                 self.inventory.pop(item)
 

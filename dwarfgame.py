@@ -1,8 +1,10 @@
 # DwarfGame.py
 
 import pygame
+import multiprocessing as mpc
 
 from time import perf_counter
+
 
 # Clearly not the best coding practices I know but who cares
 
@@ -18,6 +20,7 @@ from localization import *
 from options import *
 from world import *
 from utils import *
+from parcel import *
 
 class DwarfGame:
 
@@ -27,12 +30,17 @@ class DwarfGame:
     '''
 
     running: bool
+    loading: bool
+
     clock: pygame.time.Clock
     displayText: pygame.Surface
     world: World
+    parcel: Parcel
     colony: Colony
     faction: Faction
     currentScreen: Screen
+
+    ticks: int
 
     eventLog: list
 
@@ -66,13 +74,15 @@ class DwarfGame:
         self.localization = Localization(self.currentLanguage)
 
         self.font = pygame.font.SysFont(self.fontName, self.normalFontSize)
-        self.titleFont = pygame.font.SysFont(self.fontName, self.titleFontSize)
+        self.titleFont = pygame.font.SysFont(self.fontName, self.titleFontSize, bold=True)
 
         self.buildingSelectionIndex = 0
         self.buildingTaskSelectionIndex = 0
+        self.workshopTaskSelectionIndex = 0
         self.unitSelectionIndex = 0
         self.eventSelectionIndex = 0
         self.itemSelectionIndex = 0
+        self.ticks = 0
 
         self.isEnterKeyPressed = False
         self.isTKeyPressed = False
@@ -124,16 +134,42 @@ class DwarfGame:
             0
         ))
 
-    def Run(self):
-        self.running = True
+    def DisplayStartingText(self, backgroundColor: (int, int, int), fontName: str, text: str, fontSize: int, position: (int, int), color: (int, int, int), antialiasing: bool = False, bold: bool = False, italic: bool = False):
 
-        print(
-            "Game started."
+        tmpFont = pygame.font.SysFont(
+            name=fontName,
+            size=fontSize,
+            bold=bold,
+            italic=italic
+        )
+        render = tmpFont.render(
+            text,
+            antialiasing,
+            color
+        )
+        self.display.fill(backgroundColor)
+        self.display.blit(
+            render,
+            (position[0] - render.get_width() / 2, position[1] - render.get_height() / 2)
         )
 
-        self.clock = pygame.time.Clock()
+        pygame.display.flip()
 
-        loc = self.localization  # Shorthand for my sanity
+    def Load(self):
+        self.loading = True
+        loc = self.localization
+
+        print(
+            "Loading game..."
+        )
+
+        self.DisplayStartingText(BLACK, self.fontName, loc.Get("loading.game"), 32, (
+            self.displaySize[0] / 2, self.displaySize[1] / 2
+        ), WHITE, bold=True, antialiasing=True)
+
+        start1 = perf_counter()
+
+        self.clock = pygame.time.Clock()
 
         # Menu stuff
 
@@ -142,27 +178,46 @@ class DwarfGame:
 
         # Faction-related
 
+        self.DisplayStartingText(BLACK, self.fontName, loc.Get("loading.faction"), 24, (
+            self.displaySize[0] / 2, self.displaySize[1] / 2
+        ), WHITE, bold=True, antialiasing=True)
+
         self.faction = Faction(name="New Arrivals")
         self.faction.Register()
 
+        self.DisplayStartingText(BLACK, self.fontName, loc.Get("loading.colony"), 24, (
+            self.displaySize[0] / 2, self.displaySize[1] / 2
+        ), WHITE, bold=True, antialiasing=True)
         # Colony-related
 
         self.colony = Colony(name="New Town", faction=self.faction)
         self.colony.Register()
 
+        self.DisplayStartingText(BLACK, self.fontName, loc.Get("loading.giving_headstart"), 24, (
+            self.displaySize[0] / 2, self.displaySize[1] / 2
+        ), WHITE, bold=True, antialiasing=True)
+
         self.colony.GiveHeadstart()
+
+        self.DisplayStartingText(BLACK, self.fontName, loc.Get("loading.populate_colony"), 24, (
+            self.displaySize[0] / 2, self.displaySize[1] / 2
+        ), WHITE, bold=True, antialiasing=True)
 
         self.colony.Populate(
             count=15,
             races=[rc_Dwarf, rc_Human],
             genders=[gd_Masculine, gd_Feminine],
             minAge=1,
-            maxAge=8000
+            maxAge=120
         )
 
         # World Generation
 
         print("World generation...")
+
+        self.DisplayStartingText(BLACK, self.fontName, loc.Get("loading.worldgen"), 24, (
+            self.displaySize[0] / 2, self.displaySize[1] / 2
+        ), WHITE, bold=True, antialiasing=True)
 
         start = perf_counter()
 
@@ -174,7 +229,24 @@ class DwarfGame:
 
         end = perf_counter()
 
+        self.DisplayStartingText(BLACK, self.fontName, loc.Get("loading.parcel"), 24, (
+            self.displaySize[0] / 2, self.displaySize[1] / 2
+        ), WHITE, bold=True, antialiasing=True)
+
+        self.parcel = Parcel(0.4, 0.2, 1)
+
+        self.DisplayStartingText(BLACK, self.fontName, loc.Get("loading.done"), 24, (
+            self.displaySize[0] / 2, self.displaySize[1] / 2
+        ), WHITE, bold=True, antialiasing=True)
+
         print(f"World generation done. Time spent : {end - start}s")
+        self.loading = False
+
+    def Run(self):
+        self.Load()
+        self.running = True
+
+        loc = self.localization  # Shorthand for my sanity
 
         # Start of game loop
 
@@ -204,7 +276,7 @@ class DwarfGame:
                         self.currentScreen = Screen.INVENTORY
 
                     elif event.key == pygame.K_t:
-                        if self.currentScreen is Screen.BUILDINGS:
+                        if self.currentScreen is Screen.BUILDINGS and self.colony.buildings:
                             self.currentScreen = Screen.BUILDING_TASKS
 
                     elif event.key == pygame.K_RETURN:
@@ -212,9 +284,12 @@ class DwarfGame:
                             self.currentScreen = Screen.BUILDING_MENU
 
                         elif self.currentScreen is Screen.BUILDING_MENU:
+                            start = perf_counter()
                             all_building_tasks [
                                 self.buildingTaskSelectionIndex
                             ].TryAt(self.colony)
+                            end = perf_counter()
+                            print(f"{end-start}s")
 
                         elif self.currentScreen is Screen.UNITS:
                             self.currentScreen = Screen.UNIT_PRESENTATION
@@ -455,19 +530,23 @@ class DwarfGame:
                 self.DisplayRightText(loc.Get("keyguide.buildingmenu"), 475, WHITE)
 
             elif self.currentScreen == Screen.BUILDING_TASKS:
-                self.DisplayScreenTitle(
-                    loc.Get("title.buildings_tasks", loc.Get(self.colony.buildings[self.buildingSelectionIndex].name)),
-                    YELLOW
-                )
+                if not self.colony.buildings:
+                    self.DisplayMiddleText("Nothing to show there", 250, RED)
+                else:
 
-                self.DisplayMiddleText(
-                    loc.Get("building.activetasks", (
-                        loc.Get(self.colony.buildings[self.buildingSelectionIndex].name),
-                        len(
-                            self.colony.buildings[self.buildingSelectionIndex].activeTasks
-                        )
-                    )), 250, WHITE
-                )
+                    self.DisplayScreenTitle(
+                        loc.Get("title.buildings_tasks", loc.Get(self.colony.buildings[self.buildingSelectionIndex].name)),
+                        YELLOW
+                    )
+
+                    self.DisplayMiddleText(
+                        loc.Get("building.activetasks", (
+                            loc.Get(self.colony.buildings[self.buildingSelectionIndex].name),
+                            len(
+                                self.colony.buildings[self.buildingSelectionIndex].activeTasks
+                            )
+                        )), 250, WHITE
+                    )
 
             elif self.currentScreen is Screen.BUILDING_MENU:
 
@@ -627,4 +706,4 @@ class DwarfGame:
 
             pygame.display.flip()
 
-            self.clock.tick(60)
+            self.clock.tick(20)

@@ -1,11 +1,12 @@
 # Workshop.py
 
 from material import *
-from colony import*
-from weapon import*
-from building import*
-from itempair import*
-from task import*
+from colony import *
+from weapon import *
+from building import *
+from itempair import *
+from task import *
+from materialtype import *
 
 all_workshops = []
 
@@ -38,19 +39,19 @@ ts_BuildCarpentersWorkshop = Task (
     name = "task.buildcarpenterstable",
     requirements = [
         ItemPair (
-            mat_WOOD,
+            mtt_Wood,
             5
         ),
         ItemPair (
-            mat_STEEL,
+            mtt_SteelBar,
             1
         ),
         ItemPair (
-            mat_STEEL,
+            mtt_SteelBar,
             1
         ),
         ItemPair (
-            mat_STEEL,
+            mtt_SteelBar,
             1
         )
     ],
@@ -70,8 +71,8 @@ ts_BuildMasonsTable = Task (
     name = "task.buildmasonstable",
     requirements = [
         ItemPair (
-            mat_STONE,
-            5
+            mtt_Stone,
+            80
         )
     ],
     results = {

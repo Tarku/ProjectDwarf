@@ -49,7 +49,7 @@ TILES_PER_SCREEN = 50
 
 # Colony-related
 
-HEADSTART_QUANTITY = 2000
+HEADSTART_QUANTITY = 7
 
 # Person-related
 
@@ -65,6 +65,9 @@ class FactionRelationship(Enum):
 
 
 # Miscelleanous
+
+TILE_SIZE = 16
+PC_TILES_PATH = "assets\\images\\parcel_tileset.png"
 
 class Direction(Enum):
     NORTH = 0,

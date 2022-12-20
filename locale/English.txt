@@ -1,3 +1,14 @@
+; Loading texts
+
+loading.game=Loading game...
+loading.faction=Creating factions...
+loading.colony=Creating colony...
+loading.giving_headstart=Giving riches to the colony...
+loading.populate_colony=Populating colony...
+loading.worldgen=Generating the world...
+loading.parcel=Generating the parcel...
+loading.done=Done!
+
 ; Titles
 
 title.colony=Colony
@@ -75,13 +86,27 @@ event.visitorgift=%s, a visitor, has gifted %s to the colony.
 
 ; Materials
 
-material.wood=Wood
-material.stone=Stone
-material.copper=Copper
-material.iron=Iron
-material.steel=Steel
-material.gold=Gold
-material.silver=Silver
+; ; Stones
+material.basalt=Basalt
+material.claystone=Claystone
+material.granite=Granite
+
+; ; Woods
+material.oak_wood=Oak Wood
+material.cherry_wood=Cherry Wood
+material.aspen_wood=Aspen Wood
+
+; ; Metals
+material.copper=Copper Bar
+material.iron=Iron Bar
+material.steel=Steel Bar
+material.gold=Gold Bar
+material.silver=Silver Bar
+
+; Material types
+
+materialtype.stone=Any stone
+materialtype.wood=Any wood
 
 ; Unit-related
 

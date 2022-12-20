@@ -1,3 +1,14 @@
+; Loading texts
+
+loading.game=Chargement du jeu...
+loading.faction=Création des factions...
+loading.colony=Création de la colonie...
+loading.giving_headstart=Dotation en biens de la colonie...
+loading.populate_colony=Population de la colonie...
+loading.worldgen=Génération du monde...
+loading.parcel=Génération de la parcelle...
+loading.done=Fini!
+
 ; Titles
 
 title.colony=Colonie
@@ -75,13 +86,28 @@ event.visitorgift=%s, un visiteur, a offert %s à la colonie.
 
 ; Materials
 
-material.wood=Bois
-material.stone=Pierre
-material.copper=Cuivre
-material.iron=Fer
-material.steel=Acier
-material.gold=Or
-material.silver=Argent
+; ; Stones
+material.basalt=Basalte
+material.claystone=Argilite
+material.granite=Granite
+
+; ; Woods
+material.oak_wood=Bois de chêne
+material.cherry_wood=Bois de cerisier
+material.aspen_wood=Bois de tremble
+
+; ; Metals
+material.copper=Lingot de cuivre
+material.iron=Lingot de fer
+material.steel=Lingot d'acier
+material.gold=Lingot d'or
+material.silver=Lingot d'argent
+
+; Material types
+
+materialtype.stone=N'importe quelle pierre
+materialtype.wood=N'importe quel bois
+materialtype.steel=Acier
 
 ; Unit-related
 
