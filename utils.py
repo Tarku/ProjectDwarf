@@ -43,9 +43,13 @@ class TaskResultType (Enum):
     ITEM = 0,
     BUILDING = 1
 
+
 # Map
 
-TILES_PER_SCREEN = 50
+TILES_PER_SCREEN = 50  # This should be
+
+
+MAP_SCROLL_AMOUNT: int = 1  # By how many tiles the map should be scrolled at using arrow keys
 
 # Colony-related
 
@@ -68,6 +72,38 @@ class FactionRelationship(Enum):
 
 TILE_SIZE = 16
 PC_TILES_PATH = "assets\\images\\parcel_tileset.png"
+
+def LoopValue(value: int, minNumber: int, maxNumber: int):
+    if value > maxNumber - 1:
+        value = minNumber
+
+    if value < minNumber:
+        value = maxNumber - 1
+
+    return value
+
+def ClampValue(value: int, minNumber: int, maxNumber: int, isInclusive: bool = False):
+    if isInclusive:
+        if value > maxNumber:
+            value = maxNumber
+    else:
+        if value > maxNumber - 1:
+            value = maxNumber
+
+    if value < minNumber:
+        value = minNumber
+
+    return value
+
+def ClampTuple(values: tuple, minNumber: int, maxNumber: int):
+    return tuple(
+        map(
+            lambda val: ClampValue(val, minNumber, maxNumber),
+            values
+        )
+    )
+
+
 
 class Direction(Enum):
     NORTH = 0,

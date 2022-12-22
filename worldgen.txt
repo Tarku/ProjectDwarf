@@ -1,10 +1,17 @@
+; Basics
+
 octaves=18
-width=200
-height=200
+width=100
+height=100
+
+; Height related
+deep_sea_level=-0.51
 sea_level=-0.21
 low_hills_level=0.15
 hills_level=0.31
 mountains_level=0.97
+
+; Temperature related
 hot_level=0.8
 warm_level=0.4
 temperate_level=-0.2

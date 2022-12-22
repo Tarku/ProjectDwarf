@@ -9,6 +9,7 @@ from pygame.surface import Surface
 from options import Options
 from pygame import image, display, sprite, transform
 from utils import *
+from math import floor
 
 class World:
 
@@ -40,6 +41,7 @@ class World:
         self.hillsLevel = self.worldgenOptions.Get("hills_level")
         self.lowHillsLevel = self.worldgenOptions.Get("low_hills_level")
         self.seaLevel = self.worldgenOptions.Get("sea_level")
+        self.deepSeaLevel = self.worldgenOptions.Get("deep_sea_level")
 
         # Temperature related
         self.hotLevel = self.worldgenOptions.Get("hot_level")
@@ -60,7 +62,7 @@ class World:
 
         self.octaves = self.worldgenOptions.Get("octaves")
 
-        self.perlins = [PerlinNoise(seed=seed, octaves=self.octaves / i) for i in range(1, 4)]
+        self.perlins = [PerlinNoise(seed=seed, octaves=self.octaves / i) for i in range(1, 5)]
         self.humidityNoise = PerlinNoise(seed=seed, octaves = 12)
 
     def DumpToFile(self):
@@ -223,27 +225,40 @@ class World:
     def ShowMap(self, screen: Surface, offset: tuple):
         tileGroup = sprite.Group()
 
-        for y in range(self.height):
-            for x in range(self.width):
+        for y in range(TILES_PER_SCREEN):
+            for x in range(TILES_PER_SCREEN):
+                offsetX = ClampValue(offset[0], -floor(self.width / 2), 0)
+                offsetY = ClampValue(offset[1], -floor(self.height / 2), 0)
 
-                if self.heightmap[y][x] > float(self.mountainsLevel) * 1.8:
+                adjustedX = x - int(offsetX)
+                adjustedY = y - int(offsetY)
+
+                adjustedX = ClampValue(adjustedX, 0, self.width - 1)
+                adjustedY = ClampValue(adjustedY, 0, self.height - 1)
+
+                height = self.heightmap[adjustedY][adjustedX]
+                temp = self.temperatureMap[adjustedY][adjustedX]
+
+                if height > float(self.mountainsLevel):
                     tileX = 0
-                elif self.heightmap[y][x] > float(self.hillsLevel):
+                elif height > float(self.hillsLevel):
                     tileX = 1
-                elif self.heightmap[y][x] > float(self.lowHillsLevel) * 0.7:
+                elif height > float(self.lowHillsLevel):
                     tileX = 2
-                elif self.heightmap[y][x] > float(self.seaLevel):
+                elif height > float(self.seaLevel):
                     tileX = 3
-                else:
+                elif height > float(self.deepSeaLevel):
                     tileX = 4
+                else:
+                    tileX = 5
 
-                if self.temperatureMap[y][x] > float(self.hotLevel):
+                if temp > float(self.hotLevel):
                     tileY = 4
-                elif self.temperatureMap[y][x] > float(self.warmLevel):
+                elif temp > float(self.warmLevel):
                     tileY = 3
-                elif self.temperatureMap[y][x] > float(self.temperateLevel):
+                elif temp > float(self.temperateLevel):
                     tileY = 2
-                elif self.temperatureMap[y][x] > float(self.coldLevel):
+                elif temp > float(self.coldLevel):
                     tileY = 1
                 else:
                     tileY = 0
@@ -262,8 +277,8 @@ class World:
                         ratio
                     )
                 )
-                screenX = x * ratio + offset[0]
-                screenY = y * ratio + offset[1]
+                screenX = x * ratio
+                screenY = y * ratio
 
                 tileSprite.rect = [screenX, screenY, ratio, ratio]
 
