@@ -17,10 +17,12 @@ class Workshop (Building):
     Use the "ws_" prefix for in-code variable identification.
     '''
 
-    def __init__(self, name: str, tasks: list):
-        self.name = name
-        self.tasks = tasks
+    tasks: list
 
+    def __init__(self, name: str, tasks: list, value: float):
+        Building.__init__(self, name, value)
+
+        self.tasks = tasks
         self.activeTasks = []
 
     def Register(self):
@@ -29,15 +31,16 @@ class Workshop (Building):
 
 
 ws_CarpentersTable = Workshop (
-    name = "building.carpenterstable",
-    tasks = [
-        ts_CraftDarkScythe
-    ]
+    name="building.carpenterstable",
+    tasks=[
+        ts_CraftDarkScythe,
+    ],
+    value=25
 ).Register()
 
 ts_BuildCarpentersWorkshop = Task (
-    name = "task.buildcarpenterstable",
-    requirements = [
+    name="task.buildcarpenterstable",
+    requirements=[
         ItemPair (
             mtt_Wood,
             5
@@ -55,16 +58,17 @@ ts_BuildCarpentersWorkshop = Task (
             1
         )
     ],
-    results = {
+    results={
         TaskResultType.BUILDING : ws_CarpentersTable
     }
 ).Register(TaskType.BUILDING)
 
-ws_MasonsTable = Workshop (
-    name = "building.masonstable",
-    tasks = [
+ws_MasonsTable = Workshop(
+    name="building.masonstable",
+    tasks=[
         ts_CraftDarkScythe
-    ]
+    ],
+    value=25
 ).Register()
 
 ts_BuildMasonsTable = Task (

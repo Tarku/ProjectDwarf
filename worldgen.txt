@@ -1,6 +1,6 @@
 ; Basics
 
-octaves=18
+octaves=12
 width=100
 height=100
 
@@ -9,7 +9,7 @@ deep_sea_level=-0.51
 sea_level=-0.21
 low_hills_level=0.15
 hills_level=0.31
-mountains_level=0.97
+mountains_level=0.68
 
 ; Temperature related
 hot_level=0.8

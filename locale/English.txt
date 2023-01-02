@@ -9,21 +9,24 @@ loading.worldgen=Generating the world...
 loading.parcel=Generating the parcel...
 loading.done=Done!
 
+; Special
+
+special.fps=FPS: {}
+
 ; Titles
 
-title.colony=Colony
+title.colony=Colony {}
 title.units=Units
 title.events=Events
 title.buildings=Buildings
 title.building_menu=Building Menu
 title.inventory=Inventory
-title.buildings_tasks=Task(s) of building %s
+title.buildings_tasks=Task(s) of building {}
 title.designations=Designations
-title.unit_presentation=Details of %s
+title.unit_presentation=Details of {}
 
 ; Keyguides
 
-keyguide.colony=Colony : <C>
 keyguide.events=Events : <E>
 keyguide.units=Units : <U>
 keyguide.buildings=Buildings : <B>
@@ -43,26 +46,45 @@ menu.empty=<empty>
 
 ; Selection-related
 
-selection.event=Event %s/%s : %s
-selection.building=Building %s/%s : %s
-selection.unit=Unit %s/%s : %s (%s %s) %s
-selection.task=Task %s/%s : %s
-selection.inventory=Item %s/%s : %s x%s
+selection.events=Event {}/{} : {}
+selection.buildings=Building {}/{} : {}
+selection.building_menu=Task {}/{} : {} ({} in inventory)
+selection.units=Unit {}/{} : {} ({} {}) {}
+selection.tasks=Task {}/{} : {}
+selection.inventory=Item {}/{} : {} x{}
 
 ; Building-related
 
-building.activetasks=Building %s has %s active task(s).
+building.activetasks=Building {} has {} active task(s).
 
 building.carpenterstable=Carpenter's Table
 building.masonstable=Mason's Table
+building.wooden_bed=Wooden Bed
+building.chess_table=Chess Table
 
 ; Colony-related
 
 colony.newcolony=New Colony
-colony.model=Colony %s of Faction %s
-colony.population=Population : %s
-colony.buildings=The colony currently has %s buildings.
-colony.inventory=The colony currently has %s types of items in total.
+colony.mood=Mood: {}<{}%>{} (Migrants at {})
+colony.food_level=Food: {}<{}%>{}
+colony.sleep=Sleep: {}<{}%>{}
+colony.model=Colony {} of Faction {}
+colony.population=Population : {}¶
+colony.idlers=Idlers: {}¶
+colony.wealth=Wealth: {}¤
+colony.buildings=The colony currently has {} buildings.
+colony.in_bed=In bed: {}¶
+colony.inventory=The colony currently has {} types of items in total.
+
+; Death strings
+
+death.ailment.starvation={} has died of starvation
+death.ailment.blood_loss={} has died of blood loss
+
+death.magic=Magic caused {} to die!
+
+death.thirst={} has died of thirst
+death.insomnia={} has died of insomnia
 
 ; Single names
 
@@ -76,13 +98,20 @@ name.task=Task
 task.build=Build
 task.buildcarpenterstable=Build carpenter's table
 task.buildmasonstable=Build mason's table
-task.cost=Cost : %s
+task.build_bed=Build wooden bed
+task.build_chess_table=Build chess table
+task.cost=Cost : {}
 
 ; Event-related
 
-event.nameprompt=%s is asking how the colony should be named.
-event.visitor=%s is visiting the colony.
-event.visitorgift=%s, a visitor, has gifted %s to the colony.
+event.nameprompt={} is asking how the colony should be named.
+event.visitor={} is visiting the colony.
+event.visitorgift={}, a visitor, has gifted {} to the colony.
+event.migrants={} migrants have arrived.
+
+event.chitchat={} chitchatted with {} ({} opinion)
+event.deep_talk={} had a deep talk with {} ({} opinion)
+
 
 ; Materials
 
@@ -103,14 +132,28 @@ material.steel=Steel Bar
 material.gold=Gold Bar
 material.silver=Silver Bar
 
+
+; Corpse
+
+corpseitem.corpse=Corpse of {0} ({1} {2})
+
+; FoodItems
+
+fooditem.mushroom_soup=Mushroom Soup
+fooditem.rotten_flesh=Rotten Flesh
+
 ; Material types
 
 materialtype.stone=Any stone
 materialtype.wood=Any wood
+materialtype.steel=Steel Bar
 
 ; Unit-related
 
-unit.presentation=%s is %s. %s is %s years old.
+unit.presentation={} is {}. {} is {} years old.
+unit.sleep=Sleep: {}%
+unit.food_level=Food: {}%
+unit.hydration=Hydration: {}%
 
 ; Personalities
 

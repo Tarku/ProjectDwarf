@@ -1,7 +1,11 @@
 # LocalizedString.py
+import collections
 
 from languages import *
 from options import *
+from utils import SplitGet
+from collections import *
+
 
 class Localization:
     language = None
@@ -32,13 +36,14 @@ class Localization:
                 f"Cannot load localization data. Cause: Unknown attribute type."
             )
 
+    def RoundValue(self, value: float):
+        return round(value, 1)
+
     def Get(self, string: str, formatArguments = None):
         formattedString = None
 
         if string not in self.languageData.data:
-            print(
-                f"Cannot get localization string <{string}>."
-            )
+            print(f"Cannot get localization string <{string}>.")
             return string
 
         if formatArguments is None:
@@ -46,29 +51,22 @@ class Localization:
 
             return formattedString
 
-        try:
-            formattedString = self.languageData.data[string] % formatArguments
+        if isinstance(formatArguments, (list, tuple)):
+            formatArguments = list(formatArguments)
+
+            for arg in list(formatArguments):
+                if isinstance(arg, float):
+                    formatArguments[formatArguments.index(arg)] = self.RoundValue(arg)
+
+            formattedString = self.languageData.data[string].format(*formatArguments)
+        else:
+            if isinstance(formatArguments, float):
+                formatArguments = self.RoundValue(formatArguments)
+
+            formattedString = self.languageData.data[string].format(formatArguments)
+        '''try:
 
         except TypeError:
-            formattedString = self.languageData.data[string]
-
-        return formattedString
-
-    def GetFormatted(self, string: str, formatArguments: tuple):
-        formattedString = None
-
-        if string not in self.languageData.data:
-            print(
-                f"Cannot get localization string <{string}>."
-            )
-            return string
-
-        try:
-
-            formattedString = self.languageData.data[string] % formatArguments
-
-        except TypeError:
-
-            formattedString = self.languageData.data[string]
+            formattedString = self.languageData.data[string]'''
 
         return formattedString

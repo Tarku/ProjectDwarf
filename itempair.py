@@ -1,6 +1,6 @@
 # ItemPair.py
 
-from material import*
+from material import *
 
 class ItemPair:
 

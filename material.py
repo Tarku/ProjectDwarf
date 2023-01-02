@@ -1,8 +1,11 @@
 # Material.py
 
 from materialtype import *
+from utils import MAX_FOOD_LEVEL
 
 all_materials = []
+all_food_items = []
+
 class Material:
 
     '''
@@ -24,6 +27,74 @@ class Material:
         if self.materialType is not None:
             materials_by_materialtype[self.materialType] = self
         return self
+
+
+class CorpseItem(Material):
+    '''
+    The CorpseItem class.\n
+    Use the "cps_" prefix for in-code variable identification.
+    '''
+
+    def __init__(self, owner, localization):
+
+        self.owner = owner
+
+        ownerName = self.owner.name
+        ownerRace = self.owner.race.name
+        ownerAgeName = self.owner.GetAgeName()
+
+        corpseString = localization.Get(
+            "corpseitem.corpse",
+            (
+                ownerName,
+                ownerAgeName,
+                ownerRace
+            )
+        )
+
+        Material.__init__(self, corpseString, value=0, materialType=mtt_Corpse)
+
+
+class FoodItem(Material):
+
+    '''
+    The FoodItem class.\n
+    Use the "fdi_" prefix for in-code variable identification.
+    '''
+    name: str
+    value: int
+    fillPCT: int
+    moodBuff: int
+
+    def __init__(self, name: str, value: int, fillPCT: int, moodBuff: int = 0):
+        Material.__init__(self, name=name, value=value, materialType=None)
+
+        self.moodBuff = moodBuff
+        self.fillPCT = fillPCT
+
+    def Register(self):
+        Material.Register(self)
+        all_food_items.append(self)
+        return self
+
+    def OnEat(self, eater, game):
+        eater.mood += self.moodBuff
+        eater.foodLevel = (self.fillPCT / 100) * MAX_FOOD_LEVEL
+
+
+fdi_MushroomSoup = FoodItem(
+    name="fooditem.mushroom_soup",
+    value=10,
+    fillPCT=80,
+    moodBuff=10
+).Register()
+
+fdi_RottenFlesh = FoodItem(
+    name="fooditem.rotten_flesh",
+    value=2,
+    fillPCT=5,
+    moodBuff=-15
+).Register()
 
 
 mat_OakWood = Material(

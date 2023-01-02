@@ -50,3 +50,7 @@ mtt_SilverBar = MaterialType(
 mtt_Coal = MaterialType(
     name="materialtype.coal"
 ).Register()
+
+mtt_Corpse = MaterialType(
+    name="materialtype.corpse"
+).Register()

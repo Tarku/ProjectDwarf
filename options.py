@@ -58,6 +58,16 @@ class Options:
 
         return self.data[string]
 
+    def GetList(self, string: str, separator: str = SEPARATOR):
+        if string not in self.data.keys():
+            print(
+                f"Cannot find string <{string}> in options file <{self.filename}>."
+            )
+            return None
+
+        returnValue = self.data[string].split(separator)
+        return returnValue
+
     def GetBool(self, string: str):
         if string not in self.data.keys():
             print(

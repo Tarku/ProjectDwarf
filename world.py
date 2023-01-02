@@ -10,6 +10,8 @@ from options import Options
 from pygame import image, display, sprite, transform
 from utils import *
 from math import floor
+from drawing.tileset import *
+from drawing.isometricview import *
 
 class World:
 
@@ -22,33 +24,59 @@ class World:
     temperatureMap : list
     humidityMap : list
 
-    def __init__(self, seed: int = fTime()):
+    heightTiles : list
+    temperatureTiles : list
+
+    heightTemperatureTiles : list
+
+    screen: Surface
+
+    isometricView: IsometricView
+
+    def __init__(self, screen: Surface, seed: int = fTime()):
         self.seed = seed
 
+        self.screen = screen
+
         self.options = Options(
-            "worldgen.txt"
+            "options.txt"
         )
         self.worldgenOptions = Options(
             "worldgen.txt"
         )
 
-        self.tileSet = image.load(
-            "assets\\images\\map_tileset.png"
-        ).convert_alpha()
+        self.mapTileset = Tileset("assets\\images\\iso_tileset.png", 64, 96)
 
         # Height related
-        self.mountainsLevel = self.worldgenOptions.Get("mountains_level")
-        self.hillsLevel = self.worldgenOptions.Get("hills_level")
-        self.lowHillsLevel = self.worldgenOptions.Get("low_hills_level")
-        self.seaLevel = self.worldgenOptions.Get("sea_level")
-        self.deepSeaLevel = self.worldgenOptions.Get("deep_sea_level")
+        self.mountainsLevel = float(
+            self.worldgenOptions.Get("mountains_level")
+        )
+        self.hillsLevel = float(
+            self.worldgenOptions.Get("hills_level")
+        )
+        self.seaLevel = float(
+             self.worldgenOptions.Get("sea_level")
+        )
+        self.deepSeaLevel = float(
+             self.worldgenOptions.Get("deep_sea_level")
+        )
 
         # Temperature related
-        self.hotLevel = self.worldgenOptions.Get("hot_level")
-        self.warmLevel = self.worldgenOptions.Get("warm_level")
-        self.temperateLevel = self.worldgenOptions.Get("temperate_level")
-        self.coldLevel = self.worldgenOptions.Get("cold_level")
-        self.freezingLevel = self.worldgenOptions.Get("freezing_level")
+        self.hotLevel = float(
+             self.worldgenOptions.Get("hot_level")
+        )
+        self.warmLevel = float(
+             self.worldgenOptions.Get("warm_level")
+        )
+        self.temperateLevel = float(
+             self.worldgenOptions.Get("temperate_level")
+        )
+        self.coldLevel = float(
+             self.worldgenOptions.Get("cold_level")
+        )
+        self.freezingLevel = float(
+             self.worldgenOptions.Get("freezing_level")
+        )
 
         self.width = self.worldgenOptions.Get("width")
         self.height = self.worldgenOptions.Get("height")
@@ -62,8 +90,24 @@ class World:
 
         self.octaves = self.worldgenOptions.Get("octaves")
 
-        self.perlins = [PerlinNoise(seed=seed, octaves=self.octaves / i) for i in range(1, 5)]
+        self.perlins = [PerlinNoise(seed=seed, octaves=self.octaves / i) for i in range(1, 6)]
         self.humidityNoise = PerlinNoise(seed=seed, octaves = 12)
+
+        self.mapTileset.Load(display=screen)
+
+    def JoinTileInfo(self):
+        self.heightTemperatureTiles = [
+            [0 for _ in range(self.width)] for _ in range(self.height)
+        ]
+
+        for y in range(self.height):
+            for x in range(self.width):
+                height = self.heightTiles[y][x]
+                temperature = self.temperatureTiles[y][x]
+
+                self.heightTemperatureTiles[y][x] = (temperature, height)
+
+        self.isometricView = IsometricView(self.heightTemperatureTiles, self.mapTileset)
 
     def DumpToFile(self):
         dumpedHeightmap = ""
@@ -140,14 +184,34 @@ class World:
         self.heightmap = [
             [0 for _ in range(self.width)] for _ in range(self.height)
         ]
+        self.heightTiles = [
+            [0 for _ in range(self.width)] for _ in range(self.height)
+        ]
         totalTilesGenerated = 0
         for y in range(self.height):
             for x in range(self.width):
-                a = 0
+                height = 0
                 totalTilesGenerated += 1
+
                 for perlin in self.perlins:
-                    a += perlin.noise([x / 100, y / 100])
-                self.heightmap[y][x] = a
+                    height += perlin.noise([x / 50, y / 50])
+
+                self.heightmap[y][x] = height
+
+                if height > self.mountainsLevel:
+                    self.heightTiles[y][x] = 0
+
+                elif height > self.hillsLevel:
+                    self.heightTiles[y][x] = 1
+
+                elif height > self.seaLevel:
+                    self.heightTiles[y][x] = 2
+
+                elif height > self.deepSeaLevel:
+                    self.heightTiles[y][x] = 3
+
+                else:
+                    self.heightTiles[y][x] = 4
 
             if self.verboseLogging:
                 print(f"Heightmap tiles generated: {totalTilesGenerated}")
@@ -189,6 +253,9 @@ class World:
         self.temperatureMap = [
             [0 for _ in range(self.width)] for _ in range(self.height)
         ]
+        self.temperatureTiles = [
+            [0 for _ in range(self.width)] for _ in range(self.height)
+        ]
 
         tempModel = []
         step = (4 / self.height)
@@ -202,11 +269,28 @@ class World:
         for y in range(self.height):
             for x in range(self.width):
                 altitudeTemperatureOffset = self.heightmap[y][x] * 0.25
+                temperature = tempModel[y]
 
-                if self.IsTileOcean((x, y)):
-                    self.temperatureMap[y][x] = tempModel[y]
+                if not self.IsTileOcean((x, y)):
+                    temperature -= altitudeTemperatureOffset
+
+                self.temperatureMap[y][x] = temperature
+
+                if temperature > self.hotLevel:
+                    self.temperatureTiles[y][x] = 4
+
+                elif temperature > self.warmLevel:
+                    self.temperatureTiles[y][x] = 3
+
+                elif temperature > self.temperateLevel:
+                    self.temperatureTiles[y][x] = 0
+
+                elif temperature > self.coldLevel:
+                    self.temperatureTiles[y][x] = 2
+
                 else:
-                    self.temperatureMap[y][x] = tempModel[y] - altitudeTemperatureOffset
+                    self.temperatureTiles[y][x] = 1
+
 
     def GenerateHumidityMap(self):
         self.humidityMap = [
@@ -222,70 +306,8 @@ class World:
             if self.verboseLogging:
                 print(f"HumidityMap tiles generated: {totalTilesGenerated}")
 
-    def ShowMap(self, screen: Surface, offset: tuple):
-        tileGroup = sprite.Group()
-
-        for y in range(TILES_PER_SCREEN):
-            for x in range(TILES_PER_SCREEN):
-                offsetX = ClampValue(offset[0], -floor(self.width / 2), 0)
-                offsetY = ClampValue(offset[1], -floor(self.height / 2), 0)
-
-                adjustedX = x - int(offsetX)
-                adjustedY = y - int(offsetY)
-
-                adjustedX = ClampValue(adjustedX, 0, self.width - 1)
-                adjustedY = ClampValue(adjustedY, 0, self.height - 1)
-
-                height = self.heightmap[adjustedY][adjustedX]
-                temp = self.temperatureMap[adjustedY][adjustedX]
-
-                if height > float(self.mountainsLevel):
-                    tileX = 0
-                elif height > float(self.hillsLevel):
-                    tileX = 1
-                elif height > float(self.lowHillsLevel):
-                    tileX = 2
-                elif height > float(self.seaLevel):
-                    tileX = 3
-                elif height > float(self.deepSeaLevel):
-                    tileX = 4
-                else:
-                    tileX = 5
-
-                if temp > float(self.hotLevel):
-                    tileY = 4
-                elif temp > float(self.warmLevel):
-                    tileY = 3
-                elif temp > float(self.temperateLevel):
-                    tileY = 2
-                elif temp > float(self.coldLevel):
-                    tileY = 1
-                else:
-                    tileY = 0
-
-                separateTile = self.tileSet.subsurface(
-                        [tileX * 8, tileY * 8, 8, 8]
-                    )
-
-                tileSprite = sprite.Sprite()
-                ratio = screen.get_width() / TILES_PER_SCREEN
-
-                tileSprite.image = transform.scale(
-                    separateTile,
-                    (
-                        ratio,
-                        ratio
-                    )
-                )
-                screenX = x * ratio
-                screenY = y * ratio
-
-                tileSprite.rect = [screenX, screenY, ratio, ratio]
-
-                if -ratio < screenX < screen.get_width() and -ratio < screenY < screen.get_height():
-                    tileGroup.add(tileSprite)
-
-        tileGroup.draw(screen)
+    def ShowMap(self, offset: tuple):
+        self.isometricView.View(self.screen, offset)
 
         display.flip()
 

@@ -185,7 +185,11 @@ class Task:
                     print(
                         f"Successfully performed Task <{self.name}>."
                     )
+
                 buildings.append(result)
+
+                if isinstance(result, Bed):
+                    colony.beds.append(result)
 
             else:
 
@@ -212,3 +216,32 @@ ts_CraftDarkScythe = Task(
     }
 ).Register()
 
+ts_BuildBed = Task(
+    name="task.build_bed",
+    requirements=[
+        ItemPair(
+            mtt_Wood,
+            10
+        )
+    ],
+    results={
+        TaskResultType.BUILDING: bd_bed_WoodenBed
+    }
+).Register(TaskType.BUILDING)
+
+ts_BuildChessTable = Task(
+    name="task.build_chess_table",
+    requirements=[
+        ItemPair(
+            mtt_Wood,
+            15
+        ),
+        ItemPair(
+            mtt_Stone,
+            5
+        ),
+    ],
+    results={
+        TaskResultType.BUILDING: bd_rec_ChessTable
+    }
+).Register(TaskType.BUILDING)
