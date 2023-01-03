@@ -43,6 +43,7 @@ menu.previous=Previous : <Up arrow>
 menu.next=Next : <Down arrow>
 menu.select=Select : <Enter>
 menu.empty=<empty>
+menu.paused=PAUSED
 
 ; Selection-related
 

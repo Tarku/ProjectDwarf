@@ -80,10 +80,13 @@ class DwarfGame:
 
         self.font = pygame.font.Font("assets\\font\\LessPerfectDOSVGA.ttf", self.normalFontSize)
         self.titleFont = pygame.font.Font("assets\\font\\LessPerfectDOSVGA.ttf", self.titleFontSize)
+        self.pausedFont = pygame.font.Font("assets\\font\\LessPerfectDOSVGA.ttf", 50)
 
         self.loadingStringsIndex = 0
 
         self.ticks = 0
+
+        self.paused = False
 
         self.isEnterKeyPressed = False
         self.isTKeyPressed = False
@@ -267,7 +270,6 @@ class DwarfGame:
                     randomUnit.Die(self, "magic")
 
 
-
     def HandleKeybinds(self):
 
         for event in pygame.event.get():
@@ -287,6 +289,12 @@ class DwarfGame:
                 if isinstance(self.currentScreen, SelectionScreen):
                     self.currentScreen.CheckSpecialKeybinds(self, event.key)
 
+                if event.key == pygame.K_SPACE:
+                    if self.paused:
+                        self.paused = False
+                    else:
+                        self.paused = True
+
 
     def HandleUpdates(self):
         self.colony.Update(self)
@@ -300,6 +308,16 @@ class DwarfGame:
         self.currentScreen.SwitchTo(self)
 
         self.DisplayFPSCount(YELLOW, (0, 0))
+
+        if self.paused:
+            text = self.pausedFont.render(loc.Get("menu.paused"), True, WHITE, BLACK)
+            self.display.blit(
+                text,
+                Vector2(
+                    self.display.get_width() // 2 - text.get_width() // 2,
+                    self.display.get_height() // 2 - text.get_height() // 2
+                )
+            )
 
         # Beginning of the horrible if-elif-elif-... to check what to show depending
         # on the currentScreen.
@@ -315,11 +333,12 @@ class DwarfGame:
             # Background filling
             self.display.fill(DARK_VIOLET)
 
-            self.HandleKeybinds()
-            self.HandleUpdates()
             self.HandleScreen()
+            self.HandleKeybinds()
 
-            self.ticks += 1
+            if not self.paused:
+                self.HandleUpdates()
+                self.ticks += 1
 
             pygame.display.flip()
 

@@ -43,6 +43,7 @@ menu.previous=Précédent : <Flèche haut>
 menu.next=Suivant : <Flèche bas>
 menu.select=Sélectionner : <Entrée>
 menu.empty=<vide>
+menu.paused=EN PAUSE
 
 ; Selection-related
 
