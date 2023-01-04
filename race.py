@@ -1,6 +1,7 @@
 # Race.py
 
 from random import choice
+from naminglanguage import *
 
 all_races = []
 all_names_by_race = {}
@@ -16,75 +17,57 @@ class Race:
     lifeSpan: int
     childAge: int
     adultAge: int
+    language: NamingLanguage
 
-    def __init__(self, name: str, adjective: str, lifeSpan: int, childAge: int, adultAge: int):
-        self.name = name
-        self.adjective = adjective
-        self.lifeSpan = lifeSpan
-        self.childAge = childAge
-        self.adultAge = adultAge
+    def __init__(self, c_name: str, c_adjective: str, c_lifeSpan: int, c_childAge: int, c_adultAge: int, c_language: NamingLanguage):
+        self.name = c_name
+        self.adjective = c_adjective
+        self.lifeSpan = c_lifeSpan
+        self.childAge = c_childAge
+        self.adultAge = c_adultAge
+        self.language = c_language
 
     def Register(self):
         all_races.append(self)
         return self
 
-    def LoadNames(self):
-        formattedRaceName = self.name.removeprefix(
-            "race."
-        )
-        filePath = f"assets\\names\\persons\\{formattedRaceName}.txt"
-
-        try:
-            with open(filePath, "r", encoding="utf-8") as file:
-                readFile = file.read()
-                cutFile = readFile.split("\n")
-
-                cutFile = list(
-                    map(lambda x: x.capitalize(), cutFile)
-                )
-
-                all_names_by_race[formattedRaceName] = cutFile
-
-        except FileNotFoundError:
-            all_names_by_race[formattedRaceName] = ["Dunno McUnknown"]
-
 
 rc_Human = Race(
-    name="race.human",
-    adjective="race.adjective.human",
-    lifeSpan=75,
-    childAge=3,
-    adultAge=12
+    c_name="race.human",
+    c_adjective="race.adjective.human",
+    c_lifeSpan=75,
+    c_childAge=3,
+    c_adultAge=12,
+    c_language=nl_Humanish
 )
 rc_Human.Register()
-rc_Human.LoadNames()
 
 rc_Dwarf = Race(
-    name="race.dwarf",
-    adjective="race.adjective.dwarf",
-    lifeSpan=180,
-    childAge=3,
-    adultAge=12
+    c_name="race.dwarf",
+    c_adjective="race.adjective.dwarf",
+    c_lifeSpan=180,
+    c_childAge=3,
+    c_adultAge=12,
+    c_language=nl_Dwarvish
 )
 rc_Dwarf.Register()
-rc_Dwarf.LoadNames()
 
 rc_Vampire = Race(
-    name="race.vampire",
-    adjective="race.adjective.vampire",
-    lifeSpan=800,
-    childAge=50,
-    adultAge=220
+    c_name="race.vampire",
+    c_adjective="race.adjective.vampire",
+    c_lifeSpan=800,
+    c_childAge=50,
+    c_adultAge=220,
+    c_language=nl_Vampirish
 )
 rc_Vampire.Register()
-rc_Vampire.LoadNames()
 
 rc_HighElf = Race(
-    name="race.high_elf",
-    adjective="race.adjective.high_elf",
-    lifeSpan=450,
-    childAge=20,
-    adultAge=110
+    c_name="race.high_elf",
+    c_adjective="race.adjective.high_elf",
+    c_lifeSpan=450,
+    c_childAge=20,
+    c_adultAge=110,
+    c_language=nl_HighElvish
 )
 rc_HighElf.Register()
-rc_HighElf.LoadNames()

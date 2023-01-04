@@ -330,12 +330,7 @@ class Person:
             self.UpdateLevels(game)
 
     def GenerateRandomName(self):
-        formattedRaceName = self.race.name.removeprefix(
-            "race."
-        )
-        return choice(
-            all_names_by_race.get(formattedRaceName)
-        )
+        return self.race.language.GenerateName()
 
     def GetPersonalityString(self):
         return self.personality.name

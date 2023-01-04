@@ -22,6 +22,7 @@ from utils import *
 from parcel import *
 from screen import *
 from eventlog import EventLog
+from naminglanguage import *
 
 class DwarfGame:
 
@@ -218,7 +219,7 @@ class DwarfGame:
 
         self.colony.Populate(
             count=BASE_POPULATION,
-            races=[rc_Dwarf, rc_Human],
+            races=[rc_Dwarf, rc_Human, rc_Vampire, rc_HighElf],
             genders=[gd_Masculine, gd_Feminine],
             minAge=1,
             maxAge=120
@@ -309,6 +310,7 @@ class DwarfGame:
 
         self.DisplayFPSCount(YELLOW, (0, 0))
 
+
         if self.paused:
             text = self.pausedFont.render(loc.Get("menu.paused"), True, WHITE, BLACK)
             self.display.blit(
@@ -338,6 +340,7 @@ class DwarfGame:
 
             if not self.paused:
                 self.HandleUpdates()
+
                 self.ticks += 1
 
             pygame.display.flip()
@@ -345,5 +348,5 @@ class DwarfGame:
             self.clock.tick(FPS)
 
         print("Game ended in {} seconds.".format(
-            round(self.ticks / self.clock.get_fps(), 1)
+            round(self.ticks / FPS, 1)
         ))
