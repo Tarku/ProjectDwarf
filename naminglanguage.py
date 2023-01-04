@@ -48,7 +48,7 @@ nl_Vampirish = NamingLanguage(
 )
 
 nl_HighElvish = NamingLanguage(
-    c_vowels=["a", "e", "é", "o", "ó́", "u", "i"],
+    c_vowels=["a", "e", "é", "o", "ó", "u", "i"],
     c_consonants=["l", "m", "n", "r", "p", "t", "k", "b", "d", "g", "y", "w"],
     c_wordStructures=["VCVCë", "CVCVCë", "VrCV", "VrCVCë"]
 )
