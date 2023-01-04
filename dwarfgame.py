@@ -79,9 +79,9 @@ class DwarfGame:
         self.currentLanguage = self.options.Get("language")
         self.localization = Localization(self.currentLanguage)
 
-        self.font = pygame.font.Font("assets\\font\\LessPerfectDOSVGA.ttf", self.normalFontSize)
-        self.titleFont = pygame.font.Font("assets\\font\\LessPerfectDOSVGA.ttf", self.titleFontSize)
-        self.pausedFont = pygame.font.Font("assets\\font\\LessPerfectDOSVGA.ttf", 50)
+        self.font = pygame.font.SysFont("Arial", self.normalFontSize)
+        self.titleFont = pygame.font.SysFont("Arial", bold=True, size=self.titleFontSize)
+        self.pausedFont = pygame.font.SysFont("Arial", 50)
 
         self.loadingStringsIndex = 0
 
@@ -265,14 +265,14 @@ class DwarfGame:
 
         match key:
             case pygame.K_KP4:
-                randomUnit = choice(self.colony.members)
-
-                if randomUnit.isAlive:
-                    randomUnit.Die(self, "magic")
+                randomUnit = choice(self.colony.GetAliveUnits())
+                randomUnit.Die(self, "magic")
 
             case pygame.K_KP7:
                 self.colony.Populate(1, [gd_Masculine, gd_Feminine], [rc_Dwarf, rc_Human, rc_HighElf, rc_Vampire])
+                unitName = self.colony.members[-1].name
 
+                self.eventLog.Add("event.debug_populate", unitName, EventMode.POSITIVE)
 
     def HandleKeybinds(self):
 

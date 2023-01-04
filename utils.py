@@ -47,8 +47,6 @@ class TaskResultType (Enum):
 # Map
 
 TILES_PER_SCREEN = 11  # This should be a divisor of
-MAP_TILE_SIZE = 8
-
 
 MAP_SCROLL_AMOUNT: int = 1  # By how many tiles the map should be scrolled at using arrow keys
 
@@ -138,8 +136,6 @@ class TILESET:
 
     SEA = (5, 0)
     DEEP_SEA = (6, 0)
-
-
 
 class FactionRelationship(Enum):
     NEUTRAL = 0

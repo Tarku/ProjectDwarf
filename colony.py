@@ -122,6 +122,14 @@ class Colony:
 
         return allVars
 
+    def GetAliveUnits(self):
+        allAliveUnits = []
+        for person in self.members:
+            if person.isAlive:
+                allAliveUnits.append(person)
+
+        return allAliveUnits
+
     def GetMedian(self, variableName: str):
         allVars = self.GetAll(variableName)
 

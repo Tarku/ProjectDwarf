@@ -112,6 +112,7 @@ event.migrants={} migrants have arrived.
 
 event.chitchat={} chitchatted with {} ({} opinion)
 event.deep_talk={} had a deep talk with {} ({} opinion)
+event.debug_populate={} has magically spawned in the colony!
 
 
 ; Materials

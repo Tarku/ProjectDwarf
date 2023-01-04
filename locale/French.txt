@@ -108,6 +108,7 @@ event.visitorgift={}, un visiteur, a offert {} à la colonie.
 
 event.chitchat={} a bavardé avec {} (Opinion {})
 event.deep_talk={} a discuté avec {} (Opinion {})
+event.debug_populate={} a apparu magiquement dans la colonie!
 
 ; Materials
 
