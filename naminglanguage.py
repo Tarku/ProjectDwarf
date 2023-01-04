@@ -36,19 +36,19 @@ nl_Humanish = NamingLanguage(
 )
 
 nl_Dwarvish = NamingLanguage(
-    c_vowels=["â", "î", "û", "a", "i", "u"],
-    c_consonants=["sh", "t", "k", "b", "d", "j", "h", "kh", "gh", "t'", "s'", "z'", "q", "r", "s", "z", "y", "l", "f", "th", "dh", "2", "3", "w"],
+    c_vowels=["aa", "ii", "uu", "a", "i", "u"],
+    c_consonants=["sh", "t", "k", "b", "d", "j", "h", "kh", "gh", "q", "r", "s", "z", "y", "l", "f", "th", "w"],
     c_wordStructures=["CVCVC", "CVCV", "VnCVC"]
 )
 
 nl_Vampirish = NamingLanguage(
     c_vowels=["a", "e", "o", "u", "y", "i"],
-    c_consonants=["g", "t", "j", "k", "m", "mh", "n"],
-    c_wordStructures=["VCVC", "CVCula", "VCVck", "VrCVCula"]
+    c_consonants=["g", "t", "j", "c", "m", "n", "d"],
+    c_wordStructures=["VCVC", "CVCula", "VCVck", "VrCVCula", "CrVCula"]
 )
 
 nl_HighElvish = NamingLanguage(
-    c_vowels=["a", "e", "é", "o", "ó", "u", "i"],
+    c_vowels=["a", "e", "o", "u", "i"],
     c_consonants=["l", "m", "n", "r", "p", "t", "k", "b", "d", "g", "y", "w"],
     c_wordStructures=["VCVCë", "CVCVCë", "VrCV", "VrCVCë"]
 )

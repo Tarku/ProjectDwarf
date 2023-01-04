@@ -270,6 +270,9 @@ class DwarfGame:
                 if randomUnit.isAlive:
                     randomUnit.Die(self, "magic")
 
+            case pygame.K_KP7:
+                self.colony.Populate(1, [gd_Masculine, gd_Feminine], [rc_Dwarf, rc_Human, rc_HighElf, rc_Vampire])
+
 
     def HandleKeybinds(self):
 
