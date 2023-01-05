@@ -191,7 +191,7 @@ class DwarfGame:
         # Menu stuff
 
         self.currentScreen = sc_Colony
-        self.eventLog = EventLog()
+        self.eventLog = EventLog(self)
 
         # Faction-related
 
@@ -265,6 +265,9 @@ class DwarfGame:
 
         match key:
             case pygame.K_KP4:
+                if not self.colony.GetAliveUnits():
+                    return
+
                 randomUnit = choice(self.colony.GetAliveUnits())
                 randomUnit.Die(self, "magic")
 

@@ -43,7 +43,7 @@ class Localization:
         formattedString = None
 
         if string not in self.languageData.data:
-            print(f"Cannot get localization string <{string}>.")
+            # print(f"Cannot get localization string <{string}>.")
             return string
 
         if formatArguments is None:

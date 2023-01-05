@@ -234,8 +234,11 @@ class MapScreen(Screen):
         Screen.SwitchTo(self, game)
         game.world.ShowMap(self.mapOffset)
 
-        game.DisplayLeftText("X: {}".format(self.mapOffset[0]), 100, YELLOW)
-        game.DisplayLeftText("Y: {}".format(self.mapOffset[1]), 150, YELLOW)
+        game.DisplayMiddleText("X: {}".format(self.mapOffset[0]), 50, YELLOW)
+        game.DisplayMiddleText("Y: {}".format(self.mapOffset[1]), 75, YELLOW)
+
+        game.DisplayMiddleText("X: {}".format(self.mapOffset[0] + TILES_PER_SCREEN), 600, YELLOW)
+        game.DisplayMiddleText("Y: {}".format(self.mapOffset[1] + TILES_PER_SCREEN), 625, YELLOW)
 
     def CheckSpecialKeybinds(self, game, eventKey: int):
         x, y = self.mapOffset

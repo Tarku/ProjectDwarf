@@ -97,6 +97,7 @@ name.task=Tâche
 task.build=Construire
 task.buildcarpenterstable=Construire une table de charpentier
 task.buildmasonstable=Constuire une table de maçon
+task.buildbed=Constuire un lit en bois
 task.cost=Coût : {}
 
 ; Event-related
@@ -108,7 +109,15 @@ event.visitorgift={}, un visiteur, a offert {} à la colonie.
 
 event.chitchat={} a bavardé avec {} (Opinion {})
 event.deep_talk={} a discuté avec {} (Opinion {})
+event.insult={} a insulté {}! (Opinion {})
+event.slighted={} a ignoré {}! (Opinion {})
 event.debug_populate={} est apparu·e magiquement dans la colonie!
+
+event.starvation={} est affamé·e!
+
+; Debug texts
+
+debug.bed_not_found={} n'a pas pu trouver de lit.
 
 ; Materials
 

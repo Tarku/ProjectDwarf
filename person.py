@@ -1,7 +1,7 @@
 # Person.py
 
 from random import randint, choice, uniform, gauss, sample
-from math import cos
+from math import cos, sqrt
 
 from mentalstate import MentalState
 from personality import Personality, all_personalities
@@ -65,12 +65,11 @@ class Person:
         self.sleep = MAX_SLEEP
         self.hydration = MAX_HYDRATION_LEVEL
         self.consciousness = MAX_CONSCIOUSNESS
+        self.recreation = MAX_RECREATION
 
         self.introvertness = uniform(MIN_INTROVERTNESS, MAX_INTROVERTNESS)
         self.xenophobia = uniform(MIN_XENOPHOBIA, MAX_XENOPHOBIA)
         self.racism = uniform(MIN_RACISM, MAX_RACISM)
-
-        self.tact = gauss(1, 0.5)
 
         self.socializeTimer = self.introvertness * BASE_SOCIALIZE_TIMER
 
@@ -93,6 +92,7 @@ class Person:
         self.moodVariationPCT = uniform(MIN_VARIATION, MAX_VARIATION)
         self.hydrationVariationPCT = uniform(MIN_VARIATION, MAX_VARIATION)
         self.sleepVariationPCT = uniform(MIN_VARIATION, MAX_VARIATION)
+        self.recreationVariationPCT = uniform(MIN_VARIATION, MAX_VARIATION)
 
         self.hungerDivisor = 1
 
@@ -100,6 +100,9 @@ class Person:
 
         self.foodLossPerFrame = (HUNGER_LOSS_RATE * self.hungerVariationPCT) / FPS
         self.moodLossPerFrame = (MOOD_LOSS_RATE * self.moodVariationPCT) / FPS
+        self.hydrationLossPerFrame = (HYDRATION_LOSS_RATE * self.hydrationVariationPCT) / FPS
+        self.sleepLossPerFrame = (SLEEP_LOSS_RATE * self.sleepVariationPCT) / FPS
+        self.recreationLossPerFrame = (RECREATION_LOSS_RATE * self.recreationVariationPCT) / FPS
 
     def Register(self):
         all_persons.append(self)
@@ -122,6 +125,8 @@ class Person:
 
             if not isGround:
                 bed.isBeingUsed = True
+            else:
+                game.eventLog.Add("debug.bed_not_found", self.name)
 
             self.isAsleep = True
         else:
@@ -142,8 +147,11 @@ class Person:
         self.UseBedUntilMaxSleep(game, bd_bed_Ground, isGround=True)
         return True
 
+    def TryRecreation(self, game):
+        pass
+
     def ResetSocializationTimer(self):
-        self.socializeTimer = self.introvertness * BASE_SOCIALIZE_TIMER
+        self.socializeTimer = self.introvertness * BASE_SOCIALIZE_TIMER / ((self.consciousness / 100) * 2)
 
     def ResetSocializationStatus(self):
         self.lookingForSocializationMate = False
@@ -167,7 +175,6 @@ class Person:
 
         else:
             return (self.opinions[otherPerson] / 100) * 2
-
 
     def TrySocialize(self, game):
         otherParticipant: 'Person' = choice(game.colony.members)
@@ -206,6 +213,7 @@ class Person:
         else:
             if self.race is not otherParticipant.race:
                 self.SocializationAndOpinionChange(game, otherParticipant, CHITCHAT_OPINION_GAIN * (1 / self.racism))
+
             else:
                 self.SocializationAndOpinionChange(game, otherParticipant, CHITCHAT_OPINION_GAIN)
 
@@ -220,11 +228,27 @@ class Person:
             )
 
     def Die(self, game, reason):
+        if not self.isAlive:
+            return
+
         self.isAlive = False
 
         deathString = f"death.{reason}"
 
-        game.colony.MoodChange(-4)
+        for member in game.colony.members:
+            if self in member.opinions:
+                opinion = (member.opinions[self] / 100)
+
+                if opinion > 0:
+                    member.mood -= BASE_DEATH_MOOD_LOSS * (opinion + 1) * DEATH_MOOD_LOSS_FACTOR * self.moodVariationPCT
+                else:
+                    member.mood -= BASE_DEATH_MOOD_LOSS * (opinion - 1) * DEATH_MOOD_LOSS_FACTOR * self.moodVariationPCT
+
+            else:
+                member.mood -= BASE_DEATH_MOOD_LOSS * self.moodVariationPCT
+
+            member.ClampLevels(game)
+
         game.colony.AddToInventory(
             ItemPair(
                 CorpseItem(
@@ -245,14 +269,16 @@ class Person:
 
     def UpdateLevels(self, game):
         self.foodLevel -= self.foodLossPerFrame / self.hungerDivisor
-
+        self.hydration -= self.hydrationLossPerFrame
+        self.recreation -= self.recreationLossPerFrame
         self.mood -= self.moodLossPerFrame
+        self.sleep -= self.sleepLossPerFrame if not self.isAsleep else 0
+
+        self.ClampLevels(game)
 
         self.socializeTimer -= 1 / FPS
 
-        if not self.isAsleep:
-            self.sleep -= (SLEEP_LOSS_RATE * self.sleepVariationPCT) / FPS
-
+    def ClampLevels(self, game):
         self.mood = ClampValue(self.mood, MIN_MOOD, MAX_MOOD)
         self.foodLevel = ClampValue(self.foodLevel, MIN_FOOD_LEVEL, MAX_FOOD_LEVEL)
         self.sleep = ClampValue(self.sleep, MIN_SLEEP, MAX_SLEEP)
@@ -310,9 +336,10 @@ class Person:
             self.hungerState = HungerState.MALNOURISHED
 
             self.AttachAilment(alt_Starvation)
+            game.eventLog.Add("event.starvation", self.name, EventMode.PERIL)
 
         if self.foodLevel <= 0 and self.hungerState == HungerState.MALNOURISHED:
-            self.WorsenAilment(alt_Starvation, MALNUTRITION_WORSENING / 60)
+            self.WorsenAilment(alt_Starvation, MALNUTRITION_WORSENING / FPS)
 
         if self.sleep <= SLEEP_ACTION_PCT and not self.isAsleep:
             self.TrySleep(game)

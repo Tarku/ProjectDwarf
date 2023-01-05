@@ -39,12 +39,12 @@ class Ailment:
 
         severity = person.ailments[self]
 
-        person.consciousness -= self.consciousnessOffset * severity / FPS
+        person.consciousness -= self.consciousnessOffset * (severity + 1) / FPS
 
 
 alt_BloodLoss = Ailment(
     name="blood_loss",
-    initialSeverity=0.2,
+    initialSeverity=0.0,
     maxSeverity=1.0,
     lethalSeverity=1.0,
     consciousnessOffset=-2.5
@@ -52,7 +52,7 @@ alt_BloodLoss = Ailment(
 
 alt_Starvation = Ailment(
     name="starvation",
-    initialSeverity=0.2,
+    initialSeverity=0.0,
     maxSeverity=1.0,
     lethalSeverity=1.0,
     consciousnessOffset=-1.5

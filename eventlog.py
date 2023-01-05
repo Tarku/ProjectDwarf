@@ -25,8 +25,14 @@ class EventLog:
 
     __log: [EventLogMessage] = []
 
-    def __init__(self):
-        pass
+    def __init__(self, game):
+        self.game = game
+
+    def __len__(self):
+        return len(self.__log)
+
+    def __getitem__(self, item):
+        return self.game.localization.Get(self.__log[item].text, self.__log[item].formatArguments)
 
     def Add(self, text: str, formatArguments = None, mode: EventMode = EventMode.INFO):
         self.__log.insert(0, EventLogMessage(text, formatArguments, mode))

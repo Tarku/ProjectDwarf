@@ -113,7 +113,14 @@ event.migrants={} migrants have arrived.
 event.chitchat={} chitchatted with {} ({} opinion)
 event.deep_talk={} had a deep talk with {} ({} opinion)
 event.debug_populate={} has magically spawned in the colony!
+event.insult={} has insulted {}! (Opinion {})
+event.slighted={} has slighted {}! (Opinion {})
 
+event.starvation={} is starving!
+
+; Debug texts
+
+debug.bed_not_found={} n'a pas pu trouver de lit.
 
 ; Materials
 
