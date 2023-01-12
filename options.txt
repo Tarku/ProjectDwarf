@@ -1,8 +1,2 @@
-window_height=704
-window_width=704
-font=O
-normal_font_size=20
-title_font_size=26
 language=English
 verbose_logging=false
-loading_strings=loading.game,loading.faction,loading.colony,loading.giving_headstart,loading.populate_colony,loading.worldgen,loading.parcel,loading.done

@@ -1,6 +1,7 @@
 # Parcel.py
 
 from layer import Layer
+from pygame import Vector2
 
 class Parcel:
     '''

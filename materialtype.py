@@ -54,3 +54,7 @@ mtt_Coal = MaterialType(
 mtt_Corpse = MaterialType(
     name="materialtype.corpse"
 ).Register()
+
+mtt_Bucket = MaterialType(
+    name="materialtype.bucket"
+).Register()

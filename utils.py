@@ -3,13 +3,58 @@
 from enum import Enum
 import pygame
 
+pygame.init()
+
 # Game launching
 ICON_IMAGE = pygame.image.load(
-    "assets\\images\\icon.png"
+    "assets/images/icon.png"
 )
 
-TITLE = "Dwarf Game"
+CURSOR_IMAGE = pygame.image.load(
+    "assets/images/cursor.png"
+)
+
+CURSOR = pygame.cursors.Cursor((0, 0), CURSOR_IMAGE)
+
+LOADING_SCREEN_STRINGS = [
+    "loading.game",
+    "loading.faction",
+    "loading.colony",
+    "loading.giving_headstart",
+    "loading.populate_colony",
+    "loading.worldgen",
+    "loading.parcel",
+    "loading.menus",
+    "loading.done"
+]
+
+WINDOW_WIDTH = 704
+WINDOW_HEIGHT = 704
+
+EDGE_PADDING = 20
+
+HALF_WIN_WIDTH = WINDOW_WIDTH // 2
+HALF_WIN_HEIGHT = WINDOW_HEIGHT // 2
+
+DISPLAY_SIZE = (WINDOW_WIDTH, WINDOW_HEIGHT)
+
+TITLE = "Project Dwarf - {} FPS"
 FPS = 20
+
+# Text related
+
+FONT_NAME = "Arial"
+
+NORMAL_FONT_SIZE = 18
+TITLE_FONT_SIZE = 24
+STATUS_FONT_SIZE = 32
+
+FONT_ANTIALIASING = True
+
+DEFAULT_FONT = pygame.font.SysFont(FONT_NAME, NORMAL_FONT_SIZE)
+BOLD_FONT = pygame.font.SysFont(FONT_NAME, NORMAL_FONT_SIZE, bold=True)
+TITLE_FONT = pygame.font.SysFont(FONT_NAME, TITLE_FONT_SIZE, bold=True)
+OTHER_FONT = pygame.font.SysFont(FONT_NAME, STATUS_FONT_SIZE, bold=True)
 
 # Options
 
@@ -52,7 +97,7 @@ MAP_SCROLL_AMOUNT: int = 1  # By how many tiles the map should be scrolled at us
 
 # Colony-related
 
-HEADSTART_QUANTITY = 0
+HEADSTART_QUANTITY = 50000
 BASE_POPULATION = 10
 IMMIGRATION_MOOD_NEEDED = 30
 MAX_IMMIGRATION_MOOD_NEEDED = 120
@@ -109,6 +154,7 @@ SLEEP_ACTION_PCT = 25.0
 DRINK_ACTION_PCT = 25.0
 
 MALNUTRITION_WORSENING = 0.01
+DEHYDRATION_WORSENING = 0.03
 
 MAX_BERSERK_LEVEL = -35
 MIN_BERSERK_LEVEL = -100
@@ -175,7 +221,7 @@ def ClampValue(value: 'int, float', minNumber: 'int, float', maxNumber: 'int, fl
     if value < minNumber:
         value = minNumber
 
-    return value
+    return max(minNumber, min(value, maxNumber))
 
 def ClampTuple(values: tuple, minNumber: int, maxNumber: int):
     return tuple(
@@ -204,3 +250,10 @@ class HungerState(Enum):
     HUNGRY = 1,
     RAVENOUSLY_HUNGRY = 2
     MALNOURISHED = 3
+
+
+class ThirstState(Enum):
+    HYDRATED = 0,
+    THIRSTY = 1,
+    VERY_THIRSTY = 2
+    DEHYDRATED = 3

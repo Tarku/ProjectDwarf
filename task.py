@@ -245,3 +245,20 @@ ts_BuildChessTable = Task(
         TaskResultType.BUILDING: bd_rec_ChessTable
     }
 ).Register(TaskType.BUILDING)
+
+ts_BuildWell = Task(
+    name="task.build_well",
+    requirements=[
+        ItemPair(
+            mtt_Stone,
+            10
+        ),
+        ItemPair(
+            mtt_Bucket,
+            1
+        )
+    ],
+    results={
+        TaskResultType.BUILDING: bd_hyd_Well
+    }
+).Register(TaskType.BUILDING)

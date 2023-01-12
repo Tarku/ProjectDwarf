@@ -2,9 +2,13 @@
 import pygame
 
 from colors import *
+from drawing.misc import DisplayHorizontalLine, DisplayBackground
 from utils import *
 from collections.abc import Sized
 from task import *
+from workshop import Workshop
+from drawing.text import *
+
 
 all_screens = []
 all_parent_screens = {}
@@ -49,7 +53,7 @@ class Screen:
             eval(self.runFunction)
 
         if self.doesShowTitle:
-            game.DisplayScreenTitle(
+            DisplayScreenTitle(
                 loc.Get(self.title),
                 YELLOW
             )
@@ -66,12 +70,12 @@ class Screen:
     def ShowKeyguides(self, game):
         loc = game.localization
         if self.hasKeyguides:
-            game.DisplayText(loc.Get("keyguide.buildings"), (0, 450), GRAY)
-            game.DisplayText(loc.Get("keyguide.inventory"), (0, 475), WHITE)
-            game.DisplayText(loc.Get("keyguide.events"), (0, 500), GRAY)
-            game.DisplayText(loc.Get("keyguide.units"), (0, 525), WHITE)
-            game.DisplayText(loc.Get("keyguide.designations"), (0, 550), GRAY)
-            game.DisplayText(loc.Get("keyguide.map"), (0, 575), WHITE)
+            DisplayLeftText(loc.Get("keyguide.buildings"), 450, GRAY)
+            DisplayLeftText(loc.Get("keyguide.inventory"), 475, WHITE)
+            DisplayLeftText(loc.Get("keyguide.events"), 500, GRAY)
+            DisplayLeftText(loc.Get("keyguide.units"), 525, WHITE)
+            DisplayLeftText(loc.Get("keyguide.designations"), 550, GRAY)
+            DisplayLeftText(loc.Get("keyguide.map"), 575, WHITE)
 
     def CheckChildKeybinds(self, game, eventKey: int):
         if not self.isParent:
@@ -82,7 +86,8 @@ class Screen:
 
         if self not in all_parent_screens:
             print(
-                f"Cannot check Screen <{self.name}>'s Childs' Keybinds. Cause: Screen is somehow not in all_parent_screens."
+                f"Cannot check Screen <{self.name}>'s Childs' Keybinds. Cause: Screen is somehow not in "
+                f"all_parent_screens. "
             )
             return
 
@@ -95,10 +100,6 @@ class Screen:
         pass
 
 class ColonyScreen(Screen):
-    name: str
-    title: str
-    doesShowTitle: bool
-
     def __init__(self, keybind: int):
         Screen.__init__(
             self,
@@ -115,17 +116,13 @@ class ColonyScreen(Screen):
 
         loc = game.localization
 
-        game.DisplayScreenTitle(
-            loc.Get(
-                "title.colony",
-                (
-                    game.colony.name
-                )
-            ),
-            YELLOW
-        )
+        DisplayBackground(DARK_GRAY, EDGE_PADDING, 25, 255)
 
-        game.DisplayLeftText(
+        DisplayRightText(game.calendar.GetDateString(), EDGE_PADDING, WHITE)
+
+        DisplayLeftText(game.calendar.GetHourString(), EDGE_PADDING, WHITE)
+
+        DisplayLeftText(
             loc.Get(
                 "colony.wealth",
                 (
@@ -136,7 +133,7 @@ class ColonyScreen(Screen):
             YELLOW
         )
 
-        game.DisplayRightText(
+        DisplayRightText(
             loc.Get(
                 "colony.idlers",
                 (
@@ -147,7 +144,7 @@ class ColonyScreen(Screen):
             YELLOW
         )
 
-        game.DisplayRightText(
+        DisplayRightText(
             loc.Get(
                 "colony.in_bed",
                 (
@@ -158,7 +155,7 @@ class ColonyScreen(Screen):
             ORANGE
         )
 
-        game.DisplayMiddleText(
+        DisplayMiddleText(
             loc.Get(
                 "colony.population",
                 (
@@ -169,7 +166,7 @@ class ColonyScreen(Screen):
             GREEN
         )
 
-        game.DisplayMiddleText(
+        DisplayMiddleText(
             loc.Get(
                 "colony.mood",
                 (
@@ -183,7 +180,7 @@ class ColonyScreen(Screen):
             GRAY
         )
 
-        game.DisplayMiddleText(
+        DisplayMiddleText(
             loc.Get(
                 "colony.food_level",
                 (
@@ -196,7 +193,7 @@ class ColonyScreen(Screen):
             WHITE
         )
 
-        game.DisplayMiddleText(
+        DisplayMiddleText(
             loc.Get(
                 "colony.sleep",
                 (
@@ -213,9 +210,6 @@ class ColonyScreen(Screen):
 
 
 class MapScreen(Screen):
-    name: str
-    title: str
-    doesShowTitle: bool
     mapOffset: (int, int)
 
     def __init__(self, keybind: int, parentScreen: 'Screen, None' = None, isParent: bool = False):
@@ -234,11 +228,13 @@ class MapScreen(Screen):
         Screen.SwitchTo(self, game)
         game.world.ShowMap(self.mapOffset)
 
-        game.DisplayMiddleText("X: {}".format(self.mapOffset[0]), 50, YELLOW)
-        game.DisplayMiddleText("Y: {}".format(self.mapOffset[1]), 75, YELLOW)
+        x, y = self.mapOffset
 
-        game.DisplayMiddleText("X: {}".format(self.mapOffset[0] + TILES_PER_SCREEN), 600, YELLOW)
-        game.DisplayMiddleText("Y: {}".format(self.mapOffset[1] + TILES_PER_SCREEN), 625, YELLOW)
+        DisplayMiddleText("X: {}".format(x), 50, YELLOW)
+        DisplayMiddleText("Y: {}".format(y), 75, YELLOW)
+
+        DisplayMiddleText("X: {}".format(x + TILES_PER_SCREEN), 500, YELLOW)
+        DisplayMiddleText("Y: {}".format(y + TILES_PER_SCREEN), 525, YELLOW)
 
     def CheckSpecialKeybinds(self, game, eventKey: int):
         x, y = self.mapOffset
@@ -254,8 +250,8 @@ class MapScreen(Screen):
                 self.mapOffset = (x + MAP_SCROLL_AMOUNT, y)
 
         self.mapOffset = (
-            ClampValue(self.mapOffset[0], 0, game.world.width),
-            ClampValue(self.mapOffset[1], 0, game.world.height)
+            ClampValue(self.mapOffset[0], 0, game.world.width - TILES_PER_SCREEN),
+            ClampValue(self.mapOffset[1], 0, game.world.height - TILES_PER_SCREEN)
         )
 
 
@@ -335,10 +331,10 @@ class SelectionScreen(Screen):
                 argumentsTuple
             )
 
-            game.DisplayRightText(game.localization.Get("menu.previous"), 425, YELLOW)
-            game.DisplayRightText(game.localization.Get("menu.next"), 450, YELLOW)
+            DisplayRightText(game.localization.Get("menu.previous"), 425, YELLOW)
+            DisplayRightText(game.localization.Get("menu.next"), 450, YELLOW)
 
-        game.DisplayMiddleText(
+        DisplayMiddleText(
             text,
             250,
             self.color
@@ -401,10 +397,10 @@ class InventoryScreen(SelectionScreen):
 
             text = loc.Get("selection.inventory", arguments)
 
-            game.DisplayRightText(loc.Get("menu.previous"), 425, YELLOW)
-            game.DisplayRightText(loc.Get("menu.next"), 450, YELLOW)
+            DisplayRightText(loc.Get("menu.previous"), 425, YELLOW)
+            DisplayRightText(loc.Get("menu.next"), 450, YELLOW)
 
-        game.DisplayMiddleText(
+        DisplayMiddleText(
             text,
             250,
             YELLOW
@@ -505,8 +501,8 @@ class BuildingMenuScreen(SelectionScreen):
                 argumentsTuple
             )
 
-            game.DisplayRightText(game.localization.Get("menu.previous"), 425, YELLOW)
-            game.DisplayRightText(game.localization.Get("menu.next"), 450, YELLOW)
+            DisplayRightText(game.localization.Get("menu.previous"), 425, YELLOW)
+            DisplayRightText(game.localization.Get("menu.next"), 450, YELLOW)
 
         taskRequiredItems = task.RequiredItemsString()
         localizedTaskRequiredItems = []
@@ -519,20 +515,20 @@ class BuildingMenuScreen(SelectionScreen):
                 f"{game.localization.Get(localizationString)} {count}"
             )
 
-        game.DisplayMiddleText(
+        DisplayMiddleText(
             text,
             250,
             self.color
         )
 
-        game.DisplayMiddleText(game.localization.Get("task.cost", (
+        DisplayMiddleText(game.localization.Get("task.cost", (
             ", ".join(localizedTaskRequiredItems)
         )), 275, YELLOW)
 
-        game.DisplayRightText(game.localization.Get("menu.select"), 500, YELLOW)
+        DisplayRightText(game.localization.Get("menu.select"), 500, YELLOW)
 
-        game.DisplayRightText(game.localization.Get("menu.previous"), 425, YELLOW)
-        game.DisplayRightText(game.localization.Get("menu.next"), 450, YELLOW)
+        DisplayRightText(game.localization.Get("menu.previous"), 425, YELLOW)
+        DisplayRightText(game.localization.Get("menu.next"), 450, YELLOW)
 
     def CheckSpecialKeybinds(self, game, eventKey: int):
         SelectionScreen.CheckSpecialKeybinds(self, game, eventKey)
@@ -540,14 +536,33 @@ class BuildingMenuScreen(SelectionScreen):
         if eventKey == self.actionKeybind:
             all_building_tasks[self.selectionIndex].TryAt(game.colony)
 
-class BuildingTasksScreen(SelectionScreen):
-    def __init__(self, keybind: int, color: tuple, ):
-        SelectionScreen.__init__(
+class BuildingTasksScreen(Screen):
+    def __init__(self, keybind: int):
+        Screen.__init__(
+            self,
             name="building_tasks",
             keybind=keybind,
-            color=color,
-            iterableString=""
+            parentScreen=sc_Buildings,
+            doesShowTitle=True,
+            hasKeyguides=True
         )
+
+    def SwitchTo(self, game):
+        Screen.SwitchTo(self, game)
+        buildings = game.colony.buildings
+        selectionIndex = sc_Buildings.selectionIndex
+
+        currentBuilding = buildings[selectionIndex]
+
+        if isinstance(currentBuilding, Workshop):
+            availableTasks = currentBuilding.tasks
+            activeTasks = currentBuilding.activeTasks
+
+            DisplayMiddleText(game.localization.Get())
+
+
+
+
 
 
 class UnitsScreen(SelectionScreen):
@@ -632,10 +647,10 @@ class UnitsScreen(SelectionScreen):
                 argumentsTuple
             )
 
-            game.DisplayRightText(game.localization.Get("menu.previous"), 425, YELLOW)
-            game.DisplayRightText(game.localization.Get("menu.next"), 450, YELLOW)
+            DisplayRightText(game.localization.Get("menu.previous"), 425, YELLOW)
+            DisplayRightText(game.localization.Get("menu.next"), 450, YELLOW)
 
-        game.DisplayMiddleText(
+        DisplayMiddleText(
             text,
             250,
             self.color
@@ -684,12 +699,12 @@ class UnitsPresentationScreen(Screen):
             ]
 
             if self.doesShowTitle:
-                game.DisplayScreenTitle(
+                DisplayScreenTitle(
                     loc.Get(self.title, unit.name),
                     YELLOW
                 )
 
-            game.DisplayScreenTitle(loc.Get("title.unit_presentation", unit.name), YELLOW)
+            DisplayScreenTitle(loc.Get("title.unit_presentation", unit.name), YELLOW)
 
             personality = loc.Get(
                 unit.GetPersonalityString()
@@ -713,7 +728,7 @@ class UnitsPresentationScreen(Screen):
                 unit.pronoun.possessivePronoun
             )
 
-            game.DisplayLeftText(
+            DisplayLeftText(
                 loc.Get(
                     "unit.food_level",
                     (
@@ -724,7 +739,7 @@ class UnitsPresentationScreen(Screen):
                 ORANGE
             )
 
-            game.DisplayMiddleText(
+            DisplayMiddleText(
                 loc.Get(
                     "unit.hydration",
                     (
@@ -735,7 +750,7 @@ class UnitsPresentationScreen(Screen):
                 CYAN
             )
 
-            game.DisplayRightText(
+            DisplayRightText(
                 loc.Get(
                     "unit.sleep",
                     (
@@ -746,7 +761,7 @@ class UnitsPresentationScreen(Screen):
                 PURPLE
             )
 
-            game.DisplayMiddleText(
+            DisplayMiddleText(
                 loc.Get(
                     "unit.presentation",
                     (

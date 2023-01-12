@@ -1,13 +1,12 @@
 # DwarfGame.py
 
 import pygame
+import sys
 
 from time import perf_counter
 
-
-# Clearly not the best coding practices I know but who cares
-
 from colors import *
+from drawing.text import *
 from material import *
 from gameevent import *
 from colony import *
@@ -23,6 +22,7 @@ from parcel import *
 from screen import *
 from eventlog import EventLog
 from naminglanguage import *
+from calendar import *
 
 class DwarfGame:
 
@@ -48,11 +48,15 @@ class DwarfGame:
 
     loadingStrings: list
 
+    calendar: Calendar
+
     def __init__(self):
         pygame.init()
 
-        pygame.display.set_caption(TITLE)
         pygame.display.set_icon(ICON_IMAGE)
+        pygame.display.set_caption("Project Dwarf - Loading")
+
+        pygame.mouse.set_cursor(CURSOR)
 
         # Open option files
 
@@ -61,27 +65,10 @@ class DwarfGame:
 
         # Get parameters
 
-        self.displaySize = (
-            self.options.Get("window_width"),
-            self.options.Get("window_height")
-        )
-
-        self.display = pygame.display.set_mode(
-            self.displaySize
-        )
-
-        self.loadingStrings = self.options.GetList("loading_strings", ",")
-
-        self.normalFontSize = self.options.Get("normal_font_size")
-        self.titleFontSize = self.options.Get("title_font_size")
-        self.fontName = self.options.Get("font")
+        self.display = pygame.display.set_mode(DISPLAY_SIZE)
 
         self.currentLanguage = self.options.Get("language")
         self.localization = Localization(self.currentLanguage)
-
-        self.font = pygame.font.SysFont("Arial", self.normalFontSize)
-        self.titleFont = pygame.font.SysFont("Arial", bold=True, size=self.titleFontSize)
-        self.pausedFont = pygame.font.SysFont("Arial", 50)
 
         self.loadingStringsIndex = 0
 
@@ -89,73 +76,27 @@ class DwarfGame:
 
         self.paused = False
 
-        self.isEnterKeyPressed = False
-        self.isTKeyPressed = False
+    def GetInScreenMiddle(self, size: Vector2) -> tuple:
+        positionX = HALF_WIN_WIDTH - (size.x // 2)
+        positionY = HALF_WIN_HEIGHT - (size.y // 2)
+        return positionX, positionY
 
-    def GetInScreenMiddle(self, size):
-        positionX = (self.display.get_width() / 2) - (size[0] / 2)
-        positionY = (self.display.get_height() / 2) - (size[1] / 2)
-        return (
-            positionX, positionY
-        )
-
-    def DisplayText(self, text: str, position: tuple, color: tuple):
-        self.displayText = self.font.render(text, True, color)
-        self.display.blit(self.displayText, position)
-
-    def DisplayMiddleText(self, text: str, y: int, color: tuple):
-        self.displayText = self.font.render(text, True, color)
-        positionX = (self.display.get_width() / 2) - (self.displayText.get_width() / 2)
-        positionY = y
-        self.display.blit(self.displayText, (
-            positionX,
-            positionY
-        ))
-
-    def DisplayRightText(self, text: str, y: int, color: tuple):
-        self.displayText = self.font.render(text, True, color)
-        positionX = (self.display.get_width()) - (self.displayText.get_width())
-        self.display.blit(self.displayText, (
-            positionX,
-            y
-        ))
-
-    def DisplayLeftText(self, text: str, y: int, color: tuple):
-        self.displayText = self.font.render(text, True, color)
-        self.display.blit(self.displayText, (
-            0,
-            y
-        ))
-
-    def DisplayScreenTitle(self, text: str, color: tuple):
-        self.displayText = self.titleFont.render(text, True, color)
-        positionX = (self.display.get_width() / 2) - (self.displayText.get_width() / 2)
-        self.display.blit(self.displayText, (
-            positionX,
-            0
-        ))
-
-    def DisplayStartingText(self, color: (int, int, int) = WHITE, antialiasing: bool = True):
+    def DisplayStartingText(self, color: (int, int, int) = WHITE):
         text = self.localization.Get(
-            self.loadingStrings[self.loadingStringsIndex]
+            LOADING_SCREEN_STRINGS[self.loadingStringsIndex]
         )
 
-        position = (
-            self.displaySize[0] / 2,
-            self.displaySize[1] / 2
-        )
+        position = Vector2(HALF_WIN_WIDTH, HALF_WIN_HEIGHT)
 
-        tmpFont = self.titleFont
-
-        render = tmpFont.render(
+        render = TITLE_FONT.render(
             text,
-            antialiasing,
+            FONT_ANTIALIASING,
             color
         )
         self.display.fill(BLACK)
         self.display.blit(
             render,
-            (position[0] - render.get_width() / 2, position[1] - render.get_height() / 2)
+            (position.x - render.get_width() // 2, position.y - render.get_height() // 2)
         )
 
         pygame.display.flip()
@@ -168,13 +109,7 @@ class DwarfGame:
             fpsCount
         ))
 
-        self.DisplayText(fpsText, position, color)
-
-    def DisplayHorizontalLine(self, color: tuple, yPosition: int, width: int = 2):
-        horizontalLine = surface.Surface((self.display.get_width(), width))
-        horizontalLine.fill(color)
-
-        self.display.blit(horizontalLine, Vector2(0, yPosition - width / 2))
+        DisplayText(fpsText, position, color)
 
     def Load(self):
         self.loading = True
@@ -192,6 +127,8 @@ class DwarfGame:
 
         self.currentScreen = sc_Colony
         self.eventLog = EventLog(self)
+
+        self.calendar = Calendar(cli_DefaultInfo)
 
         # Faction-related
 
@@ -258,6 +195,9 @@ class DwarfGame:
             if isinstance(screen, SelectionScreen):
                 screen.Load(self)
 
+        self.loadingStringsIndex += 1
+        self.DisplayStartingText()
+
         self.loading = False
 
     def HandleCheatShortcuts(self, key):
@@ -283,6 +223,11 @@ class DwarfGame:
             if event.type == pygame.QUIT:
                 self.running = False
 
+                print("Game ran during {} seconds.".format(round(self.ticks / FPS, 1)))
+
+                pygame.quit()
+                sys.exit()
+
             elif event.type == pygame.KEYDOWN:
                 self.currentScreen.CheckKeybind(self, event.key)
                 self.HandleCheatShortcuts(event.key)
@@ -302,9 +247,11 @@ class DwarfGame:
                     else:
                         self.paused = True
 
-
     def HandleUpdates(self):
         self.colony.Update(self)
+        self.calendar.Update()
+
+        pygame.display.set_caption(TITLE.format(int(self.clock.get_fps())))
 
         for member in self.colony.members:
             member.Update(self)
@@ -312,23 +259,17 @@ class DwarfGame:
     def HandleScreen(self):
         loc = self.localization
 
+        self.display.fill(DARK_VIOLET)
+
         self.currentScreen.SwitchTo(self)
 
-        self.DisplayFPSCount(YELLOW, (0, 0))
-
+        # self.DisplayFPSCount(YELLOW, (0, 0))
 
         if self.paused:
-            text = self.pausedFont.render(loc.Get("menu.paused"), True, WHITE, BLACK)
-            self.display.blit(
-                text,
-                Vector2(
-                    self.display.get_width() // 2 - text.get_width() // 2,
-                    self.display.get_height() // 2 - text.get_height() // 2
-                )
-            )
 
-        # Beginning of the horrible if-elif-elif-... to check what to show depending
-        # on the currentScreen.
+            text = DEFAULT_FONT.render(loc.Get("menu.paused"), FONT_ANTIALIASING, WHITE, BLACK)
+            self.display.blit(text, (HALF_WIN_WIDTH - text.get_width() // 2, EDGE_PADDING))
+
 
     def Run(self):
         self.Load()
@@ -338,21 +279,12 @@ class DwarfGame:
         # Start of game loop
 
         while self.running:
-            # Background filling
-            self.display.fill(DARK_VIOLET)
-
             self.HandleScreen()
             self.HandleKeybinds()
 
             if not self.paused:
                 self.HandleUpdates()
-
                 self.ticks += 1
 
             pygame.display.flip()
-
             self.clock.tick(FPS)
-
-        print("Game ended in {} seconds.".format(
-            round(self.ticks / FPS, 1)
-        ))

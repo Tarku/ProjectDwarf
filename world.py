@@ -1,10 +1,9 @@
 # World.py
 
 
-from perlin_noise import PerlinNoise
+import perlin_noise
 from time import time as fTime
 from numpy import arange
-from os import mkdir
 from pygame.surface import Surface
 from options import Options
 from pygame import image, display, sprite, transform
@@ -90,10 +89,10 @@ class World:
 
         self.octaves = self.worldgenOptions.Get("octaves")
 
-        self.perlins = [PerlinNoise(seed=seed, octaves=self.octaves / i) for i in range(1, 6)]
-        self.humidityNoise = PerlinNoise(seed=seed, octaves = 12)
+        self.perlins = [perlin_noise.PerlinNoise(seed=seed, octaves=self.octaves / i) for i in range(1, 6)]
+        self.humidityNoise = perlin_noise.PerlinNoise(seed=seed, octaves = 12)
 
-        self.mapTileset.Load(display=screen)
+        self.mapTileset.Load()
 
     def JoinTileInfo(self):
         self.heightTemperatureTiles = [
@@ -108,65 +107,6 @@ class World:
                 self.heightTemperatureTiles[y][x] = (temperature, height)
 
         self.isometricView = IsometricView(self.heightTemperatureTiles, self.mapTileset)
-
-    def DumpToFile(self):
-        dumpedHeightmap = ""
-        dumpedTemperatureMap = ""
-        dumpedHumidityMap = ""
-
-        for y in range(self.height):
-            for x in range(self.width):
-                if self.heightmap[y][x] > float(self.mountainsLevel):
-                    dumpedHeightmap += "Δ"
-                elif self.heightmap[y][x] > float(self.hillsLevel):
-                    dumpedHeightmap += "▵"
-                elif self.heightmap[y][x] > float(self.lowHillsLevel):
-                    dumpedHeightmap += "."
-                elif self.heightmap[y][x] > float(self.seaLevel):
-                    dumpedHeightmap += "'"
-                else:
-                    dumpedHeightmap += "-"
-
-                if self.temperatureMap[y][x] > float(self.hotLevel):
-                    dumpedTemperatureMap += "H"
-                elif self.temperatureMap[y][x] > float(self.warmLevel):
-                    dumpedTemperatureMap += "W"
-                elif self.temperatureMap[y][x] > float(self.temperateLevel):
-                    dumpedTemperatureMap += "T"
-                elif self.temperatureMap[y][x] > float(self.coldLevel):
-                    dumpedTemperatureMap += "C"
-                else:
-                    dumpedTemperatureMap += "F"
-
-                if self.humidityMap[y][x] > 0.8:
-                    dumpedHumidityMap += "H"
-                elif self.humidityMap[y][x] > 0.4:
-                    dumpedHumidityMap += "W"
-                elif self.humidityMap[y][x] > -0.4:
-                    dumpedHumidityMap += "M"
-                elif self.humidityMap[y][x] > -0.8:
-                    dumpedHumidityMap += "D"
-                else:
-                    dumpedHumidityMap += "A"
-
-            dumpedHeightmap += "\n"
-            dumpedTemperatureMap += "\n"
-            dumpedHumidityMap += "\n"
-
-        mkdir(f'dumps/{int(fTime())}')
-
-        heightmapFileName = f'dumps/{int(fTime())}/heightmap.txt'
-        temperatureMapFileName = f'dumps/{int(fTime())}/temperature.txt'
-        humidityMapFileName = f'dumps/{int(fTime())}/humidity.txt'
-
-        with open(heightmapFileName, "w+", encoding='utf-8') as file:
-            file.write(dumpedHeightmap)
-
-        with open(temperatureMapFileName, "w+") as file:
-            file.write(dumpedTemperatureMap)
-
-        with open(humidityMapFileName, "w+") as file:
-            file.write(dumpedHumidityMap)
 
     def IsTileOcean(self, position: tuple[int, int]):
         if not self.heightmap:

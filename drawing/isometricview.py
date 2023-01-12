@@ -27,8 +27,8 @@ class IsometricView:
         screenWidth = display.get_width()
         ratio = screenWidth / TILES_PER_SCREEN
 
-        for y in range(mapHeight):
-            for x in range(mapWidth):
+        for y in range(TILES_PER_SCREEN):
+            for x in range(TILES_PER_SCREEN):
                 oX, oY = offset
 
                 oX = ClampValue(oX, 0, mapWidth - TILES_PER_SCREEN)
@@ -42,8 +42,8 @@ class IsometricView:
 
                     tileimage = self.tileset.GetTile(position)
 
-                    screenX = xStart + (x - y) * tileimage.get_width() / 2
-                    screenY = yStart + (x + y) * tileimage.get_height() / 6
+                    screenX = xStart + (x - y) * tileimage.get_width() // 2
+                    screenY = yStart + (x + y) * tileimage.get_height() // 6
 
                     rect = (screenX, screenY, self.tileset.tileWidth, self.tileset.tileHeight)
 
@@ -55,7 +55,6 @@ class IsometricView:
 
                 except IndexError:
                     pass
-
 
         group.draw(display)
 

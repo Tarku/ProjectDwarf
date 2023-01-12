@@ -7,6 +7,7 @@ loading.giving_headstart=Dotation en biens de la colonie...
 loading.populate_colony=Population de la colonie...
 loading.worldgen=Génération du monde...
 loading.parcel=Génération de la parcelle...
+loading.menus=Chargement des menus...
 loading.done=Fini!
 
 ; Special
@@ -61,6 +62,7 @@ building.activetasks=Le bâtiment {} a {} tâche(s) active(s).
 building.carpenterstable=Table du charpentier
 building.masonstable=Table du maçon
 building.wooden_bed=Lit en bois
+building.chess_table=Échiquier
 
 ; Colony-related
 
@@ -114,6 +116,7 @@ event.slighted={} a ignoré {}! (Opinion {})
 event.debug_populate={} est apparu·e magiquement dans la colonie!
 
 event.starvation={} est affamé·e!
+event.dehydration={} commence à être déshydraté·e!
 
 ; Debug texts
 

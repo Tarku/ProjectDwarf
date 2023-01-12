@@ -96,6 +96,11 @@ fdi_RottenFlesh = FoodItem(
     moodBuff=-15
 ).Register()
 
+mat_Bucket = Material(
+    name="material.bucket",
+    value=5,
+    materialType=mtt_Bucket
+).Register()
 
 mat_OakWood = Material(
     name="material.oak_wood",

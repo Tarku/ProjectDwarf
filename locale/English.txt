@@ -7,6 +7,7 @@ loading.giving_headstart=Giving riches to the colony...
 loading.populate_colony=Populating colony...
 loading.worldgen=Generating the world...
 loading.parcel=Generating the parcel...
+loading.menus=Loading menus...
 loading.done=Done!
 
 ; Special
@@ -117,10 +118,11 @@ event.insult={} has insulted {}! (Opinion {})
 event.slighted={} has slighted {}! (Opinion {})
 
 event.starvation={} is starving!
+event.dehydration={} is starting to be dehydrated!
 
 ; Debug texts
 
-debug.bed_not_found={} n'a pas pu trouver de lit.
+debug.bed_not_found={} couldn't find a bed.
 
 ; Materials
 

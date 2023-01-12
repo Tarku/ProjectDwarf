@@ -97,6 +97,7 @@ class Person:
         self.hungerDivisor = 1
 
         self.hungerState = HungerState.FED
+        self.thirstState = ThirstState.HYDRATED
 
         self.foodLossPerFrame = (HUNGER_LOSS_RATE * self.hungerVariationPCT) / FPS
         self.moodLossPerFrame = (MOOD_LOSS_RATE * self.moodVariationPCT) / FPS
@@ -149,6 +150,13 @@ class Person:
 
     def TryRecreation(self, game):
         pass
+
+    def TryHydration(self, game):
+        for building in game.colony.buildings:
+            if isinstance(building, HydrationBuilding):
+                building.OnUse(game, self)
+                return True
+        return False
 
     def ResetSocializationTimer(self):
         self.socializeTimer = self.introvertness * BASE_SOCIALIZE_TIMER / ((self.consciousness / 100) * 2)
@@ -281,6 +289,8 @@ class Person:
     def ClampLevels(self, game):
         self.mood = ClampValue(self.mood, MIN_MOOD, MAX_MOOD)
         self.foodLevel = ClampValue(self.foodLevel, MIN_FOOD_LEVEL, MAX_FOOD_LEVEL)
+        self.hydration = ClampValue(self.hydration, MIN_HYDRATION_LEVEL, MAX_HYDRATION_LEVEL)
+        self.recreation = ClampValue(self.recreation, MIN_RECREATION, MAX_RECREATION)
         self.sleep = ClampValue(self.sleep, MIN_SLEEP, MAX_SLEEP)
 
     def ChangeOpinion(self, other: 'Person', value: float):
@@ -316,6 +326,10 @@ class Person:
             self.RemoveAilment(alt_Starvation)
             self.hungerState = HungerState.FED
 
+        if self.hydration > DRINK_ACTION_PCT:
+            self.RemoveAilment(alt_Dehydration)
+            self.thirstState = ThirstState.HYDRATED
+
         if self.foodLevel <= EAT_ACTION_PCT:
             game.colony.UpdateInventory()
             attempt = self.TryEat(game)
@@ -325,10 +339,21 @@ class Person:
                 self.hungerDivisor += 1
                 self.hungerState = HungerState.HUNGRY
 
+        if self.hydration <= DRINK_ACTION_PCT:
+            attempt = self.TryHydration(game)
+
+            if not attempt and self.thirstState == ThirstState.HYDRATED:
+                self.mood -= 6
+                self.thirstState = ThirstState.THIRSTY
+
         if self.foodLevel <= EAT_ACTION_PCT / 2 and self.hungerState == HungerState.HUNGRY:
             self.mood -= 12
             self.hungerDivisor += 1
             self.hungerState = HungerState.RAVENOUSLY_HUNGRY
+
+        if self.hydration <= DRINK_ACTION_PCT / 2 and self.thirstState == ThirstState.THIRSTY:
+            self.mood -= 12
+            self.thirstState = ThirstState.VERY_THIRSTY
 
         if self.foodLevel <= 0 and self.hungerState == HungerState.RAVENOUSLY_HUNGRY:
             self.mood -= 20
@@ -338,8 +363,18 @@ class Person:
             self.AttachAilment(alt_Starvation)
             game.eventLog.Add("event.starvation", self.name, EventMode.PERIL)
 
+        if self.hydration <= DRINK_ACTION_PCT / 4 and self.thirstState == ThirstState.VERY_THIRSTY:
+            self.mood -= 20
+            self.thirstState = ThirstState.DEHYDRATED
+
+            self.AttachAilment(alt_Dehydration)
+            game.eventLog.Add("event.dehydration", self.name, EventMode.PERIL)
+
         if self.foodLevel <= 0 and self.hungerState == HungerState.MALNOURISHED:
             self.WorsenAilment(alt_Starvation, MALNUTRITION_WORSENING / FPS)
+
+        if self.hydration <= 0 and self.hungerState == HungerState.MALNOURISHED:
+            self.WorsenAilment(alt_Dehydration, DEHYDRATION_WORSENING / FPS)
 
         if self.sleep <= SLEEP_ACTION_PCT and not self.isAsleep:
             self.TrySleep(game)

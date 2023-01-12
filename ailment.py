@@ -57,3 +57,19 @@ alt_Starvation = Ailment(
     lethalSeverity=1.0,
     consciousnessOffset=-1.5
 )
+
+alt_Dehydration = Ailment(
+    name="thirst",
+    initialSeverity=0.0,
+    maxSeverity=1.0,
+    lethalSeverity=1.0,
+    consciousnessOffset=-2.5
+)
+
+alt_Cholera = Ailment(
+    name="cholera",
+    initialSeverity=0.0,
+    maxSeverity=1.0,
+    lethalSeverity=1.0,
+    consciousnessOffset=-2.5
+)

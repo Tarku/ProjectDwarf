@@ -1,6 +1,8 @@
 # Layer.py
 
 from tile import *
+from pygame import Vector2
+from filth import *
 
 class Layer:
     '''
@@ -24,12 +26,20 @@ class Layer:
             ] for _ in range(height)
         ]
 
-    def GetTile(self, position: tuple[int, int]):
-        x, y = position
+        self.filthMap = [
+            [None for _ in range(100)] for _ in range(100)
+        ]
+
+    def AddFilth(self, position: Vector2, filth: Filth):
+        x, y = position.x, position.y
+        self.filthMap[y][x] = filth
+
+    def GetTile(self, position: Vector2):
+        x, y = position.x, position.y
         return self.tiles[y][x]
 
-    def SetTile(self, position: tuple[int, int], tile: Tile):
-        x, y = position
+    def SetTile(self, position: Vector2, tile: Tile):
+        x, y = position.x, position.y
         self.tiles[y][x] = tile
 
 

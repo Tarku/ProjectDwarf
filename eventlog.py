@@ -4,6 +4,10 @@ from colors import *
 from pygame.surface import Surface
 from pygame.font import *
 from pygame import Vector2, Rect
+from utils import *
+
+from drawing.text import *
+from drawing.misc import *
 
 class EventMode:
     PERIL = (RED, BLACK)
@@ -40,9 +44,6 @@ class EventLog:
     def Show(self, game):
         loc = game.localization
 
-        screenWidth = game.display.get_width()
-        screenFontSize = game.normalFontSize
-
         if not self.__log:
             return
 
@@ -56,12 +57,12 @@ class EventLog:
         else:
             formattedText = loc.Get(text, arguments)
 
-        game.DisplayHorizontalLine(DARK_GRAY, 650, 3)
-        game.DisplayHorizontalLine(DARK_GRAY, 650 + screenFontSize + (.25 * screenFontSize), 3)
+        DisplayHorizontalLine(DARK_GRAY, 650, 3)
+        DisplayHorizontalLine(DARK_GRAY, 650 + NORMAL_FONT_SIZE + (.25 * NORMAL_FONT_SIZE), 3)
 
-        background = Surface(Vector2(screenWidth, screenFontSize + (.25 * screenFontSize)))
+        background = Surface(Vector2(WINDOW_WIDTH, NORMAL_FONT_SIZE + (.25 * NORMAL_FONT_SIZE)))
         background.fill(backgroundColor)
 
-        game.display.blit(background, Rect(0, 650, screenFontSize + (.25 * screenFontSize), screenWidth))
+        game.display.blit(background, Rect(0, 650, NORMAL_FONT_SIZE + (.25 * NORMAL_FONT_SIZE), WINDOW_WIDTH))
 
-        game.DisplayMiddleText(formattedText, 650, fontColor)
+        DisplayMiddleText(formattedText, 650, fontColor)
