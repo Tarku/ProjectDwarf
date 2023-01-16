@@ -59,6 +59,8 @@ class Person:
         self.opinions = {}
         self.unitCompability = {}
 
+        self.equipment = {}
+
         self.race = race
 
         self.foodLevel = MAX_FOOD_LEVEL
@@ -126,8 +128,6 @@ class Person:
 
             if not isGround:
                 bed.isBeingUsed = True
-            else:
-                game.eventLog.Add("debug.bed_not_found", self.name)
 
             self.isAsleep = True
         else:
@@ -225,6 +225,7 @@ class Person:
             else:
                 self.SocializationAndOpinionChange(game, otherParticipant, CHITCHAT_OPINION_GAIN)
 
+            '''
             game.eventLog.Add(
                 "event.chitchat",
                 (
@@ -234,6 +235,7 @@ class Person:
                 ),
                 EventMode.INFO
             )
+            '''
 
     def Die(self, game, reason):
         if not self.isAlive:
@@ -284,7 +286,7 @@ class Person:
 
         self.ClampLevels(game)
 
-        self.socializeTimer -= 1 / FPS
+        self.socializeTimer -= 1
 
     def ClampLevels(self, game):
         self.mood = ClampValue(self.mood, MIN_MOOD, MAX_MOOD)
@@ -329,6 +331,9 @@ class Person:
         if self.hydration > DRINK_ACTION_PCT:
             self.RemoveAilment(alt_Dehydration)
             self.thirstState = ThirstState.HYDRATED
+
+        if self.recreation > RECREATION_ACTION_PCT:
+            self.TryRecreation(game)
 
         if self.foodLevel <= EAT_ACTION_PCT:
             game.colony.UpdateInventory()

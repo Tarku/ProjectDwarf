@@ -25,6 +25,7 @@ title.inventory=Inventory
 title.buildings_tasks=Task(s) of building {}
 title.designations=Designations
 title.unit_presentation=Details of {}
+title.faction_screen=Factions of the World
 
 ; Keyguides
 
@@ -54,6 +55,8 @@ selection.building_menu=Task {}/{} : {} ({} in inventory)
 selection.units=Unit {}/{} : {} ({} {}) {}
 selection.tasks=Task {}/{} : {}
 selection.inventory=Item {}/{} : {} x{}
+selection.faction=Faction {}/{} : {}
+selection.own_faction=Faction {}/{} : {} (YOU)
 
 ; Building-related
 
@@ -77,6 +80,18 @@ colony.wealth=Wealth: {}¤
 colony.buildings=The colony currently has {} buildings.
 colony.in_bed=In bed: {}¶
 colony.inventory=The colony currently has {} types of items in total.
+
+; Faction-related
+
+factionmenu.leader=Leader: {}
+
+factiontype.empire=Empire
+factiontype.democratic_faction=Democratic Faction
+factiontype.democratic_republic=Democratic Republic
+factiontype.kingdom=Kingdom
+factiontype.free_state=Free State
+factiontype.republic=Republic
+factiontype.consulate=Consulate
 
 ; Death strings
 

@@ -75,6 +75,8 @@ class Keys:
     ENTER = pygame.K_RETURN
     PAGE_UP = pygame.K_PAGEUP
     PAGE_DOWN = pygame.K_PAGEDOWN
+    MENU_PREV = pygame.K_UP
+    MENU_NEXT = pygame.K_DOWN
 
 # Tasks
 
@@ -117,7 +119,9 @@ HYDRATION_LOSS_RATE = 2.1
 CHITCHAT_OPINION_GAIN = 1.6
 DEEP_TALK_OPINION_GAIN = 12
 
-BASE_SOCIALIZE_TIMER = 2
+TICKS_PER_HOUR = 20
+
+BASE_SOCIALIZE_TIMER = 2.5 * TICKS_PER_HOUR
 
 MIN_INTROVERTNESS = 0.7
 MAX_INTROVERTNESS = 2.4
@@ -152,6 +156,7 @@ MAX_SLEEP = 100.0
 EAT_ACTION_PCT = 25.0
 SLEEP_ACTION_PCT = 25.0
 DRINK_ACTION_PCT = 25.0
+RECREATION_ACTION_PCT = 25.0
 
 MALNUTRITION_WORSENING = 0.01
 DEHYDRATION_WORSENING = 0.03
@@ -167,6 +172,7 @@ MIGRANT_ARRIVAL_CHANCE_PCT = 35
 # Faction-related
 
 FACTION_SYLLABLES_PATH = "assets\\names\\factions\\syllables.txt"
+FACTION_BASE_AMOUNT = 4
 
 class TILESET:
     MOUNTAIN_TEMPERATE = (0, 0)
@@ -211,16 +217,6 @@ def LoopValue(value: 'int, float', minNumber: 'int, float', maxNumber: 'int, flo
     return value
 
 def ClampValue(value: 'int, float', minNumber: 'int, float', maxNumber: 'int, float', isInclusive: bool = True):
-    if isInclusive:
-        if value > maxNumber:
-            value = maxNumber
-    else:
-        if value > maxNumber - 1:
-            value = maxNumber
-
-    if value < minNumber:
-        value = minNumber
-
     return max(minNumber, min(value, maxNumber))
 
 def ClampTuple(values: tuple, minNumber: int, maxNumber: int):

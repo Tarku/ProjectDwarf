@@ -13,6 +13,46 @@ from drawing.text import *
 all_screens = []
 all_parent_screens = {}
 
+class Prompt:
+    title: str
+    string: str
+    padding: int
+
+    def __init__(self, game, c_title: str = "", c_padding: int = 10):
+        self.title = c_title
+        self.game = game
+
+        self.string = ""
+        self.padding = c_padding
+
+
+    def GetString(self):
+        return self.string
+
+    def Draw(self, event):
+        titleLen = len(self.string) * NORMAL_FONT_SIZE
+        x = HALF_WIN_WIDTH - titleLen // 2
+        y = HALF_WIN_HEIGHT - NORMAL_FONT_SIZE // 2
+        height = self.padding * 2 + NORMAL_FONT_SIZE
+        width = self.padding * 2 + titleLen
+
+        backgroundRectangle = pygame.surface.Surface((width, height))
+        backgroundRectangle.fill(BLACK)
+
+        pygame.display.get_surface().blit(backgroundRectangle, (x, y))
+
+        DisplayMiddleText(self.string, y, WHITE)
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                self.string = self.string[:-1]
+            else:
+                self.string += event.unicode
+
+
+            
+        
+
 class Screen:
     '''
     The Screen class for the game.\n
@@ -780,18 +820,106 @@ class UnitsPresentationScreen(Screen):
     def CheckKeybind(self, game, eventKey: int):
         Screen.CheckKeybind(self, game, eventKey)
 
+class EventLogScreen(Screen):
+    selectionIndex: int = 0
+    eventAmount: int
+
+    def __init__(self, keybind: int):
+        Screen.__init__(self, name="event_log", keybind=keybind, isParent=False, doesShowTitle=True, parentScreen=sc_Colony)
+        
+    def SwitchTo(self, game):
+        Screen.SwitchTo(self, game)
+
+        self.eventAmount = len(game.eventLog)
+        menuText = game.localization.Get("menu.empty")
+
+        if game.eventLog:
+            menuText = game.localization.Get(
+                "selection.events",
+                (
+                    self.selectionIndex + 1,
+                    self.eventAmount,
+                    game.eventLog[self.selectionIndex]
+                )
+            )
+            menuColor = game.eventLog.log[self.selectionIndex].mode[0]
+
+            DisplayMiddleText(menuText, 250, menuColor)
+
+        else:
+            DisplayMiddleText(menuText, 250, WHITE)
+
+    def CheckSpecialKeybinds(self, game, eventKey: int):
+        match eventKey:
+            case Keys.MENU_PREV:
+                self.eventAmount -= 1
+            case Keys.MENU_NEXT:
+                self.eventAmount += 1
+
+        self.selectionIndex = LoopValue(self.selectionIndex, 0, self.eventAmount)
+
+class FactionScreen(Screen):
+    selectionIndex: int = 0
+    factionAmount: int
+
+    def __init__(self, keybind: int, parentScreen: Screen):
+        Screen.__init__(self, name="faction_screen", keybind=keybind, isParent=True, doesShowTitle=True, parentScreen=parentScreen)
+
+    def SwitchTo(self, game):
+        Screen.SwitchTo(self, game)
+
+        self.factionAmount = len(all_factions)
+        menuText = game.localization.Get("menu.empty")
+
+        if all_factions:
+            selectedFaction = all_factions[self.selectionIndex]
+
+            if selectedFaction == game.faction:
+                menuText = game.localization.Get("selection.own_faction", (self.selectionIndex + 1, self.factionAmount, selectedFaction.name))
+            else:
+                menuText = game.localization.Get("selection.faction", (self.selectionIndex + 1, self.factionAmount, selectedFaction.name))
+
+
+        DisplayMiddleText(menuText, 250, WHITE)
+
+    def CheckSpecialKeybinds(self, game, eventKey: int):
+        match eventKey:
+            case Keys.MENU_PREV:
+                self.selectionIndex -= 1
+            case Keys.MENU_NEXT:
+                self.selectionIndex += 1
+
+        self.selectionIndex = LoopValue(self.selectionIndex, 0, self.factionAmount)
+
+class FactionPresentationScreen(Screen):
+    def __init__(self, keybind: int):
+        Screen.__init__(self, name="faction_presentation", keybind=keybind, parentScreen=sc_Factions, isParent=False, doesShowTitle=False)
+
+    def SwitchTo(self, game):
+        Screen.SwitchTo(self, game)
+
+        selectedFaction = all_factions[sc_Factions.selectionIndex]
+
+        DisplayScreenTitle(selectedFaction.name, YELLOW)
+
+        DisplayMiddleText(game.localization.Get("factionmenu.leader", selectedFaction.leader.name), 150, WHITE)
+
 
 sc_Colony = ColonyScreen(pygame.K_c)
 
-sc_Events = SelectionScreen(
-    name="events",
-    keybind=pygame.K_e,
-    iterableString="main.eventLog",
-    color=WHITE,
-    localizationStringArguments="object",
-    parentScreen=sc_Colony
+sc_Events = EventLogScreen(
+    keybind=pygame.K_e
 )
 sc_Inventory = InventoryScreen()
+
+sc_Factions = FactionScreen(
+    keybind=pygame.K_f,
+    parentScreen=sc_Colony
+)
+
+sc_FactionPresentationMenu = FactionPresentationScreen(
+    keybind=pygame.K_RETURN
+)
 
 sc_Units = UnitsScreen(
     keybind=pygame.K_u,

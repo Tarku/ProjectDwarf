@@ -14,7 +14,7 @@ class NamingLanguage:
 
         self.wordStructures = c_wordStructures
 
-    def GenerateName(self):
+    def GenerateName(self) -> str:
         word = randomStructure = choice(self.wordStructures)
 
         consonantCount = randomStructure.count("C")

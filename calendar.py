@@ -1,6 +1,6 @@
 # Calendar.py
 
-from utils import FPS
+from utils import FPS, TICKS_PER_HOUR
 from math import log
 
 MONTH_NAMES = [
@@ -77,7 +77,7 @@ class CalendarInfo:
 
 
 cli_DefaultInfo = CalendarInfo(
-    c_ticksPerHour=20,
+    c_ticksPerHour=TICKS_PER_HOUR,
     c_hoursPerDay=24,
     c_daysPerMonth=30,
     c_monthsPerYear=12,

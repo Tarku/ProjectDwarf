@@ -50,6 +50,8 @@ class DwarfGame:
 
     calendar: Calendar
 
+    event: pygame.event.Event
+
     def __init__(self):
         pygame.init()
 
@@ -66,6 +68,8 @@ class DwarfGame:
         # Get parameters
 
         self.display = pygame.display.set_mode(DISPLAY_SIZE)
+
+        self.prompt = Prompt(self, "Hi")
 
         self.currentLanguage = self.options.Get("language")
         self.localization = Localization(self.currentLanguage)
@@ -135,8 +139,14 @@ class DwarfGame:
         self.loadingStringsIndex += 1
         self.DisplayStartingText()
 
-        self.faction = Faction(name="New Arrivals")
+        self.faction = Faction(ft_DemocraticFaction, c_race=rc_Dwarf)
+        self.faction.GenerateName(self)
         self.faction.Register()
+
+        for _ in range(FACTION_BASE_AMOUNT):
+            temp = Faction(choice(all_faction_types), c_race=choice(all_races))
+            temp.GenerateName(self)
+            temp.Register()
 
         # Colony-related
 
@@ -217,9 +227,11 @@ class DwarfGame:
 
                 self.eventLog.Add("event.debug_populate", unitName, EventMode.POSITIVE)
 
+
     def HandleKeybinds(self):
 
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 self.running = False
 
@@ -229,23 +241,18 @@ class DwarfGame:
                 sys.exit()
 
             elif event.type == pygame.KEYDOWN:
+                self.event = event
+
                 self.currentScreen.CheckKeybind(self, event.key)
                 self.HandleCheatShortcuts(event.key)
 
                 if self.currentScreen.isParent:
                     self.currentScreen.CheckChildKeybinds(self, event.key)
 
-                if type(self.currentScreen) is MapScreen:
-                    self.currentScreen.CheckSpecialKeybinds(self, event.key)
-
-                if isinstance(self.currentScreen, SelectionScreen):
-                    self.currentScreen.CheckSpecialKeybinds(self, event.key)
+                self.currentScreen.CheckSpecialKeybinds(self, event.key)
 
                 if event.key == pygame.K_SPACE:
-                    if self.paused:
-                        self.paused = False
-                    else:
-                        self.paused = True
+                    self.paused = not self.paused
 
     def HandleUpdates(self):
         self.colony.Update(self)
@@ -270,6 +277,9 @@ class DwarfGame:
             text = DEFAULT_FONT.render(loc.Get("menu.paused"), FONT_ANTIALIASING, WHITE, BLACK)
             self.display.blit(text, (HALF_WIN_WIDTH - text.get_width() // 2, EDGE_PADDING))
 
+            # self.prompt.Draw(self.event)
+
+
 
     def Run(self):
         self.Load()
@@ -285,6 +295,7 @@ class DwarfGame:
             if not self.paused:
                 self.HandleUpdates()
                 self.ticks += 1
+
 
             pygame.display.flip()
             self.clock.tick(FPS)

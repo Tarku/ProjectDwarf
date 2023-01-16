@@ -5,9 +5,73 @@ from person import *
 from utils import FactionRelationship, FACTION_SYLLABLES_PATH
 
 all_factions = []
+all_faction_types = []
 
 class FactionShell:
     pass
+
+class FactionType:
+    name: str
+    canWomenRule: bool
+    minimumAgeToRule: int
+
+    def __init__(self, c_name: str, c_canWomenRule: bool = True, c_minimumAgeToRule: int = 15):
+        self.name = c_name
+        self.canWomenRule = c_canWomenRule
+        self.minimumAgeToRule = c_minimumAgeToRule
+
+    def Register(self):
+        all_faction_types.append(self)
+        return self
+
+
+ft_DemocraticFaction = FactionType(
+    "democratic_faction",
+    True,
+    18
+).Register()
+
+ft_DemocraticRepublic = FactionType(
+    "democratic_republic",
+    True,
+    18
+).Register()
+
+ft_Republic = FactionType(
+    "republic",
+    True,
+    18
+).Register()
+
+ft_FreeState = FactionType(
+    "free_state",
+    False,
+    21
+).Register()
+
+ft_Consulate = FactionType(
+    "consulate",
+    False,
+    21
+).Register()
+
+ft_Kingdom1 = FactionType(
+    "kingdom",
+    False,
+    32
+).Register()
+
+ft_Kingdom2 = FactionType(
+    "kingdom",
+    True,
+    32
+).Register()
+
+ft_Empire = FactionType(
+    "empire",
+    False,
+    32
+).Register()
 
 class Faction(FactionShell):
 
@@ -15,11 +79,21 @@ class Faction(FactionShell):
     The Faction class.\n
     Use the "fc_" prefix for in-code variable identification.
     '''
+    def __init__(self, c_type: FactionType, c_name: str = "", c_race: Race = rc_Dwarf):
+        self.name = c_name
+        self.type = c_type
 
-    def __init__(self, name = ""):
-        self.name = name
+        self.race = c_race
+
+        if self.type.canWomenRule:
+            allowedGendersToRule = [gd_Masculine, gd_Feminine]
+        else:
+            allowedGendersToRule = [gd_Masculine]
+
+        self.leader = Person("", choice(allowedGendersToRule), self.race, randint(self.type.minimumAgeToRule, self.race.lifeSpan))
 
         self.members = []
+        self.members.append(self.leader)
 
         self.relationships = {}
 
@@ -27,28 +101,17 @@ class Faction(FactionShell):
         all_factions.append(self)
         return self
 
-    def GenerateName(self, minLength = 1, maxLength = 4):
-        '''
-        Generates a random name for the faction from the syllables in assets/names/factions.txt .
-        '''
+    def GenerateName(self, game):
 
-        tempName = ""
+        randomName = self.race.language.GenerateName()
+        raceAdjective = game.localization.Get(self.race.adjective)
+        factionTypeName = game.localization.Get(f"factiontype.{self.type.name}")
 
-        randomNumber = randint(minLength, maxLength + 1)
-        syllableFile = open(FACTION_SYLLABLES_PATH, 'r', encoding='utf-8')
+        possibleStrings = [f"{raceAdjective} {factionTypeName} of {randomName}", f"{randomName} {factionTypeName}"]
 
-        uncutSyllables = syllableFile.read()
-        cutSyllables = uncutSyllables.split("\n")
+        self.name = choice(possibleStrings)
 
-        syllablesCount = len(cutSyllables)
 
-        for _ in range(randomNumber):
-            syllableNo = randint(0, syllablesCount)
-            tempName += cutSyllables[syllableNo - 1]
-
-        self.name = tempName
-
-        syllableFile.close()
 
     def AddRelationship(self, otherFaction, relationshipStatus: FactionRelationship):
 
